@@ -29,6 +29,8 @@ export default function AdminGamePage() {
   const [baseUrl, setBaseUrl] = useState('');
   const [editingUrl, setEditingUrl] = useState(false);
   const [urlInput, setUrlInput] = useState('');
+  const [codeCopied, setCodeCopied] = useState(false);
+  const [urlCopied, setUrlCopied] = useState(false);
 
   // Initialize base URL on mount
   useEffect(() => {
@@ -96,20 +98,55 @@ export default function AdminGamePage() {
     }
   };
 
+  // Helper function to copy text with fallback for non-HTTPS contexts
+  const copyToClipboard = async (text: string) => {
+    try {
+      // Try modern clipboard API first (requires HTTPS)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (err) {
+      // Fall through to fallback method
+    }
+
+    // Fallback for HTTP contexts
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return true;
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      return false;
+    }
+  };
+
   // Copy code to clipboard
-  const copyCode = () => {
-    if (game?.code) {
-      navigator.clipboard.writeText(game.code);
-      alert('Code copied to clipboard!');
+  const copyCode = async () => {
+    if (game?.code && !codeCopied) {
+      const success = await copyToClipboard(game.code);
+      if (success) {
+        setCodeCopied(true);
+        setTimeout(() => setCodeCopied(false), 2000);
+      }
     }
   };
 
   // Copy join URL to clipboard
-  const copyJoinUrl = () => {
-    if (game?.code && baseUrl) {
+  const copyJoinUrl = async () => {
+    if (game?.code && baseUrl && !urlCopied) {
       const joinUrl = `${baseUrl}/game/${game.code}`;
-      navigator.clipboard.writeText(joinUrl);
-      alert('Join URL copied to clipboard!');
+      const success = await copyToClipboard(joinUrl);
+      if (success) {
+        setUrlCopied(true);
+        setTimeout(() => setUrlCopied(false), 2000);
+      }
     }
   };
 
@@ -164,9 +201,14 @@ export default function AdminGamePage() {
           <p className="text-5xl font-bold tracking-widest mb-4">{game.code}</p>
           <button
             onClick={copyCode}
-            className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm transition-colors"
+            disabled={codeCopied}
+            className={`px-4 py-2 rounded text-sm transition-colors ${
+              codeCopied
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-700 hover:bg-gray-600'
+            }`}
           >
-            Copy Code
+            {codeCopied ? '✓ Copied!' : 'Copy Code'}
           </button>
 
           <div className="mt-4 pt-4 border-t border-gray-700">
@@ -227,9 +269,14 @@ export default function AdminGamePage() {
               </div>
               <button
                 onClick={copyJoinUrl}
-                className="w-full bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm transition-colors"
+                disabled={urlCopied}
+                className={`w-full px-4 py-2 rounded text-sm transition-colors ${
+                  urlCopied
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-700 hover:bg-gray-600'
+                }`}
               >
-                Copy Join URL
+                {urlCopied ? '✓ Copied!' : 'Copy Join URL'}
               </button>
             </>
           )}
