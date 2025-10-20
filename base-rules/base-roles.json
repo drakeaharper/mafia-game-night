@@ -1,0 +1,248 @@
+{
+  "schema_version": "1.0",
+  "roles": [
+    {
+      "id": "mafia",
+      "name": "Mafia",
+      "alignment": "evil",
+      "description": "You are a member of the Mafia. Your goal is to eliminate all townspeople while avoiding detection.",
+      "abilities": [
+        {
+          "id": "night_kill",
+          "name": "Night Kill",
+          "description": "Work with other Mafia members to choose one player to eliminate each night.",
+          "phase": "night",
+          "target": "single_player",
+          "collective": true
+        }
+      ],
+      "knowledge": [
+        {
+          "type": "other_mafia",
+          "description": "You know the identities of all other Mafia members."
+        }
+      ],
+      "win_condition": {
+        "type": "equal_or_outnumber",
+        "target": "town",
+        "description": "Mafia wins when they equal or outnumber the remaining townspeople."
+      },
+      "card_instructions": [
+        "You are Mafia. Keep this secret!",
+        "At night, work with other Mafia to choose a target.",
+        "During the day, blend in and avoid suspicion.",
+        "Win by equaling or outnumbering the town."
+      ]
+    },
+    {
+      "id": "detective",
+      "name": "Detective",
+      "alignment": "good",
+      "description": "You are the Detective. Each night, you can investigate one player to learn their alignment.",
+      "abilities": [
+        {
+          "id": "investigate",
+          "name": "Investigate",
+          "description": "Point to one player. The moderator will reveal if they are Mafia or Town.",
+          "phase": "night",
+          "target": "single_player",
+          "collective": false,
+          "uses": "unlimited"
+        }
+      ],
+      "knowledge": [],
+      "win_condition": {
+        "type": "eliminate_all",
+        "target": "mafia",
+        "description": "Town wins when all Mafia members are eliminated."
+      },
+      "card_instructions": [
+        "You are the Detective. Keep this secret!",
+        "Each night, investigate one player's alignment.",
+        "Use your information wisely without revealing yourself.",
+        "Win by eliminating all Mafia members."
+      ]
+    },
+    {
+      "id": "doctor",
+      "name": "Doctor",
+      "alignment": "good",
+      "description": "You are the Doctor. Each night, you can protect one player from elimination.",
+      "abilities": [
+        {
+          "id": "protect",
+          "name": "Protect",
+          "description": "Choose one player to protect from Mafia attacks. You can protect yourself.",
+          "phase": "night",
+          "target": "single_player",
+          "collective": false,
+          "uses": "unlimited",
+          "restrictions": [
+            "Cannot protect the same player two nights in a row"
+          ]
+        }
+      ],
+      "knowledge": [],
+      "win_condition": {
+        "type": "eliminate_all",
+        "target": "mafia",
+        "description": "Town wins when all Mafia members are eliminated."
+      },
+      "card_instructions": [
+        "You are the Doctor. Keep this secret!",
+        "Each night, protect one player from elimination.",
+        "You cannot protect the same player twice in a row.",
+        "Win by eliminating all Mafia members."
+      ]
+    },
+    {
+      "id": "vigilante",
+      "name": "Vigilante",
+      "alignment": "good",
+      "description": "You are the Vigilante. You have the power to eliminate players at night, but use it wisely.",
+      "abilities": [
+        {
+          "id": "night_kill",
+          "name": "Vigilante Kill",
+          "description": "Choose one player to eliminate during the night. Be careful not to hit townspeople!",
+          "phase": "night",
+          "target": "single_player",
+          "collective": false,
+          "uses": "limited",
+          "max_uses": 2
+        }
+      ],
+      "knowledge": [],
+      "win_condition": {
+        "type": "eliminate_all",
+        "target": "mafia",
+        "description": "Town wins when all Mafia members are eliminated."
+      },
+      "card_instructions": [
+        "You are the Vigilante. Keep this secret!",
+        "You can kill up to 2 players during night phases.",
+        "Be careful not to eliminate innocent townspeople!",
+        "Win by eliminating all Mafia members."
+      ]
+    },
+    {
+      "id": "townsperson",
+      "name": "Townsperson",
+      "alignment": "good",
+      "description": "You are a regular Townsperson. You have no special abilities, but your vote and voice matter.",
+      "abilities": [],
+      "knowledge": [],
+      "win_condition": {
+        "type": "eliminate_all",
+        "target": "mafia",
+        "description": "Town wins when all Mafia members are eliminated."
+      },
+      "card_instructions": [
+        "You are a Townsperson.",
+        "You have no special abilities.",
+        "Use logic and discussion to find the Mafia.",
+        "Win by eliminating all Mafia members."
+      ]
+    },
+    {
+      "id": "godfather",
+      "name": "Godfather",
+      "alignment": "evil",
+      "description": "You are the Godfather, leader of the Mafia. You appear innocent to Detective investigations.",
+      "abilities": [
+        {
+          "id": "night_kill",
+          "name": "Night Kill",
+          "description": "Work with other Mafia members to choose one player to eliminate each night.",
+          "phase": "night",
+          "target": "single_player",
+          "collective": true
+        },
+        {
+          "id": "investigation_immunity",
+          "name": "Investigation Immunity",
+          "description": "You appear as Town to Detective investigations.",
+          "phase": "passive",
+          "target": "self"
+        }
+      ],
+      "knowledge": [
+        {
+          "type": "other_mafia",
+          "description": "You know the identities of all other Mafia members."
+        }
+      ],
+      "win_condition": {
+        "type": "equal_or_outnumber",
+        "target": "town",
+        "description": "Mafia wins when they equal or outnumber the remaining townspeople."
+      },
+      "card_instructions": [
+        "You are the Godfather. Keep this secret!",
+        "You appear innocent to Detective investigations.",
+        "Work with other Mafia to eliminate townspeople.",
+        "Win by equaling or outnumbering the town."
+      ]
+    },
+    {
+      "id": "jester",
+      "name": "Jester",
+      "alignment": "neutral",
+      "description": "You are the Jester. Your goal is to get yourself eliminated during the day phase.",
+      "abilities": [],
+      "knowledge": [],
+      "win_condition": {
+        "type": "custom",
+        "description": "Jester wins if they are eliminated during a day vote. If the Jester wins, the game ends immediately."
+      },
+      "card_instructions": [
+        "You are the Jester.",
+        "Your goal is to get voted out during the day!",
+        "Act suspicious but not too suspicious.",
+        "You win alone if eliminated by vote."
+      ]
+    }
+  ],
+  "role_distribution_presets": {
+    "7_players": {
+      "mafia": 2,
+      "detective": 1,
+      "doctor": 1,
+      "townsperson": 3
+    },
+    "10_players": {
+      "mafia": 3,
+      "detective": 1,
+      "doctor": 1,
+      "townsperson": 5
+    },
+    "13_players": {
+      "mafia": 3,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 7
+    },
+    "15_players": {
+      "mafia": 4,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 8
+    },
+    "18_players": {
+      "mafia": 5,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 10
+    }
+  },
+  "metadata": {
+    "game_name": "Classic Mafia",
+    "min_players": 7,
+    "max_players": 999,
+    "recommended_players": "10-15",
+    "complexity": "beginner"
+  }
+}

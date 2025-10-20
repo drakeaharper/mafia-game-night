@@ -1,0 +1,256 @@
+{
+  "schema_version": "1.0",
+  "theme_id": "harry-potter",
+  "theme_name": "Death Eaters Among Us",
+  "base_theme": "classic",
+  "description": "A Harry Potter themed variant of Mafia where Death Eaters have infiltrated the Order of the Phoenix.",
+
+  "role_mappings": [
+    {
+      "base_role": "mafia",
+      "overrides": {
+        "name": "Death Eater",
+        "description": "You are a Death Eater serving the Dark Lord. Eliminate Order members while avoiding detection.",
+        "card_instructions": [
+          "You are a Death Eater. Keep this secret!",
+          "Your Dark Mark burns, revealing other Death Eaters to you.",
+          "Each night, work with fellow Death Eaters to eliminate an Order member.",
+          "During the day, blend in and avoid suspicion.",
+          "Win by equaling or outnumbering the Order."
+        ]
+      },
+      "flavor": {
+        "icon": "dark-mark",
+        "color": "#1a472a",
+        "flavor_text": "The Dark Mark burns on your arm..."
+      }
+    },
+    {
+      "base_role": "detective",
+      "overrides": {
+        "name": "Dumbledore",
+        "description": "You are Albus Dumbledore. Use your wisdom to sense the presence of dark magic.",
+        "abilities": [
+          {
+            "id": "investigate",
+            "name": "Sense Dark Magic",
+            "description": "Point to one player. The Game Master will reveal if they serve the Dark Lord or the Order.",
+            "phase": "night",
+            "target": "single_player",
+            "collective": false,
+            "uses": "unlimited"
+          }
+        ],
+        "card_instructions": [
+          "You are Dumbledore. Keep this secret!",
+          "Each night, you can sense if someone has the Dark Mark.",
+          "Use your wisdom carefully without revealing yourself.",
+          "Win by eliminating all Death Eaters."
+        ]
+      },
+      "flavor": {
+        "icon": "dumbledore",
+        "color": "#740001",
+        "flavor_text": "Your wisdom allows you to sense dark magic..."
+      }
+    },
+    {
+      "base_role": "doctor",
+      "overrides": {
+        "name": "Hermione Granger",
+        "description": "You are Hermione Granger. Use protective spells to save Order members from Death Eater attacks.",
+        "abilities": [
+          {
+            "id": "protect",
+            "name": "Protego Maxima",
+            "description": "Cast a powerful shield charm on one player to protect them from Death Eaters. You can protect yourself.",
+            "phase": "night",
+            "target": "single_player",
+            "collective": false,
+            "uses": "unlimited",
+            "restrictions": [
+              "Cannot protect the same player two nights in a row"
+            ]
+          }
+        ],
+        "card_instructions": [
+          "You are Hermione Granger. Keep this secret!",
+          "Each night, cast Protego Maxima on one player.",
+          "You cannot protect the same player twice in a row.",
+          "Win by eliminating all Death Eaters."
+        ]
+      },
+      "flavor": {
+        "icon": "hermione",
+        "color": "#ae0001",
+        "flavor_text": "Your protective spells can save lives..."
+      }
+    },
+    {
+      "base_role": "vigilante",
+      "overrides": {
+        "name": "Mad-Eye Moody",
+        "description": "You are Mad-Eye Moody. Your constant vigilance allows you to investigate players at night.",
+        "abilities": [
+          {
+            "id": "investigate",
+            "name": "Constant Vigilance",
+            "description": "Investigate one player each night to learn their alignment.",
+            "phase": "night",
+            "target": "single_player",
+            "collective": false,
+            "uses": "unlimited"
+          }
+        ],
+        "card_instructions": [
+          "You are Mad-Eye Moody. Keep this secret!",
+          "Each night, investigate one player's alignment.",
+          "You provide backup if Dumbledore is eliminated.",
+          "Win by eliminating all Death Eaters."
+        ]
+      },
+      "flavor": {
+        "icon": "moody",
+        "color": "#ae0001",
+        "flavor_text": "Constant vigilance! Trust no one..."
+      }
+    },
+    {
+      "base_role": "townsperson",
+      "overrides": {
+        "name": "Order Member",
+        "description": "You are a member of the Order of the Phoenix. Use your voice and vote to identify Death Eaters.",
+        "card_instructions": [
+          "You are an Order Member.",
+          "You have no special abilities.",
+          "Use logic and discussion to find the Death Eaters.",
+          "Vote to send suspected Death Eaters to Azkaban.",
+          "Win by eliminating all Death Eaters."
+        ]
+      },
+      "flavor": {
+        "icon": "order-phoenix",
+        "color": "#ae0001",
+        "flavor_text": "You fight for the light against the darkness..."
+      }
+    }
+  ],
+
+  "new_roles": [
+    {
+      "id": "voldemort",
+      "name": "Voldemort",
+      "alignment": "evil",
+      "description": "You are the Dark Lord. You lead the Death Eaters and appear innocent to investigations.",
+      "abilities": [
+        {
+          "id": "night_kill",
+          "name": "Avada Kedavra",
+          "description": "Work with Death Eaters to choose one Order member to eliminate each night.",
+          "phase": "night",
+          "target": "single_player",
+          "collective": true
+        },
+        {
+          "id": "investigation_immunity",
+          "name": "Dark Magic Concealment",
+          "description": "You appear as an Order member to magical investigations.",
+          "phase": "passive",
+          "target": "self"
+        }
+      ],
+      "knowledge": [
+        {
+          "type": "other_mafia",
+          "description": "You know the identities of all Death Eaters."
+        }
+      ],
+      "win_condition": {
+        "type": "equal_or_outnumber",
+        "target": "town",
+        "description": "Death Eaters win when they equal or outnumber the Order members."
+      },
+      "card_instructions": [
+        "You are the Dark Lord. Keep this secret!",
+        "You appear innocent to Dumbledore's investigations.",
+        "Lead the Death Eaters in eliminating the Order.",
+        "Win by equaling or outnumbering the Order."
+      ],
+      "flavor": {
+        "icon": "voldemort",
+        "color": "#0d0d0d",
+        "flavor_text": "The Dark Lord rises again..."
+      }
+    }
+  ],
+
+  "role_distribution_presets": {
+    "7_players": {
+      "death_eater": 2,
+      "dumbledore": 1,
+      "hermione_granger": 1,
+      "order_member": 3
+    },
+    "10_players": {
+      "death_eater": 3,
+      "dumbledore": 1,
+      "hermione_granger": 1,
+      "order_member": 5
+    },
+    "13_players": {
+      "death_eater": 3,
+      "dumbledore": 1,
+      "hermione_granger": 1,
+      "mad_eye_moody": 1,
+      "order_member": 7
+    },
+    "15_players": {
+      "voldemort": 1,
+      "death_eater": 3,
+      "dumbledore": 1,
+      "hermione_granger": 1,
+      "mad_eye_moody": 1,
+      "order_member": 8
+    },
+    "18_players": {
+      "voldemort": 1,
+      "death_eater": 4,
+      "dumbledore": 1,
+      "hermione_granger": 1,
+      "mad_eye_moody": 1,
+      "order_member": 10
+    }
+  },
+
+  "game_flow_overrides": {
+    "night_order": [
+      "death_eaters",
+      "dumbledore",
+      "mad_eye_moody",
+      "hermione_granger"
+    ],
+    "day_announcement_templates": {
+      "elimination": "Last night, {player_name} was attacked by Death Eaters. They were {role}.",
+      "saved": "Last night, Death Eaters attacked, but their target was protected by powerful magic!",
+      "vote_out": "{player_name} has been sent to Azkaban. They were {role}."
+    }
+  },
+
+  "flavor_text": {
+    "game_start": "Death Eaters have infiltrated the Order of the Phoenix! Find them before it's too late.",
+    "town_win": "The Order of the Phoenix has prevailed! All Death Eaters have been captured.",
+    "mafia_win": "The Dark Lord has won! Death Eaters now control the Order.",
+    "night_falls": "Night falls over headquarters. Everyone close your eyes and go to sleep.",
+    "day_breaks": "Dawn breaks over headquarters. Everyone open your eyes."
+  },
+
+  "metadata": {
+    "game_name": "Death Eaters Among Us",
+    "min_players": 7,
+    "max_players": 999,
+    "recommended_players": "10-15",
+    "complexity": "beginner",
+    "author": "Community",
+    "version": "1.0"
+  }
+}
