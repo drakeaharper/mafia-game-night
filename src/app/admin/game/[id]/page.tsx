@@ -26,6 +26,18 @@ export default function AdminGamePage() {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [issuing, setIssuing] = useState(false);
+  const [baseUrl, setBaseUrl] = useState('');
+  const [editingUrl, setEditingUrl] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+
+  // Initialize base URL on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const origin = window.location.origin;
+      setBaseUrl(origin);
+      setUrlInput(origin);
+    }
+  }, []);
 
   // Fetch game data
   const fetchGame = async () => {
@@ -44,13 +56,13 @@ export default function AdminGamePage() {
 
   // Generate QR code
   useEffect(() => {
-    if (game?.code) {
-      const joinUrl = `${window.location.origin}/game/${game.code}`;
+    if (game?.code && baseUrl) {
+      const joinUrl = `${baseUrl}/game/${game.code}`;
       QRCode.toDataURL(joinUrl, { width: 256 })
         .then(setQrCodeUrl)
         .catch(err => console.error('Error generating QR code:', err));
     }
-  }, [game?.code]);
+  }, [game?.code, baseUrl]);
 
   // Poll for updates every 3 seconds
   useEffect(() => {
@@ -91,6 +103,30 @@ export default function AdminGamePage() {
       alert('Code copied to clipboard!');
     }
   };
+
+  // Copy join URL to clipboard
+  const copyJoinUrl = () => {
+    if (game?.code && baseUrl) {
+      const joinUrl = `${baseUrl}/game/${game.code}`;
+      navigator.clipboard.writeText(joinUrl);
+      alert('Join URL copied to clipboard!');
+    }
+  };
+
+  // Update base URL
+  const handleUpdateUrl = () => {
+    setBaseUrl(urlInput);
+    setEditingUrl(false);
+  };
+
+  // Cancel URL editing
+  const handleCancelEdit = () => {
+    setUrlInput(baseUrl);
+    setEditingUrl(false);
+  };
+
+  // Check if using localhost
+  const isLocalhost = baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
 
   if (loading) {
     return (
@@ -144,6 +180,65 @@ export default function AdminGamePage() {
               />
             </div>
           </div>
+        </div>
+
+        {/* Join URL */}
+        <div className="bg-gray-800 p-4 rounded-lg mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-gray-400">Join URL</p>
+            {!editingUrl && (
+              <button
+                onClick={() => setEditingUrl(true)}
+                className="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors"
+              >
+                Edit
+              </button>
+            )}
+          </div>
+
+          {editingUrl ? (
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                className="w-full p-2 bg-gray-700 rounded text-sm font-mono"
+                placeholder="http://192.168.1.100:3000"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handleUpdateUrl}
+                  className="flex-1 bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-sm transition-colors"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={handleCancelEdit}
+                  className="flex-1 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="bg-gray-700 p-3 rounded mb-2 break-all text-sm font-mono">
+                {baseUrl}/game/{game.code}
+              </div>
+              <button
+                onClick={copyJoinUrl}
+                className="w-full bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm transition-colors"
+              >
+                Copy Join URL
+              </button>
+            </>
+          )}
+
+          {isLocalhost && (
+            <div className="mt-3 p-2 bg-yellow-900/30 border border-yellow-700 rounded text-xs text-yellow-300">
+              ⚠️ Using localhost - QR code won&apos;t work on other devices. Click Edit to use your network IP (e.g., http://192.168.1.x:3000)
+            </div>
+          )}
         </div>
 
         {/* QR Code */}
