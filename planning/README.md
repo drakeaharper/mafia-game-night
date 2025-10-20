@@ -68,7 +68,7 @@ Each planning document should follow this structure:
 |-------|-------|--------|-------------|
 | [00](phase_00.md) | Next.js Project Initialization | ✅ Complete | Set up Next.js with TypeScript, Tailwind, SQLite dependencies |
 | [01](phase_01.md) | SQLite Database Setup | ✅ Complete | Create database schema, initialization, and connection |
-| [02](phase_02.md) | TypeScript Types and Models | Not Started | Define types and create type-safe database CRUD functions |
+| [02](phase_02.md) | TypeScript Types and Models | ✅ Complete | Define types and create type-safe database CRUD functions |
 | [03](phase_03.md) | Role System Loader | Not Started | Load and merge base roles with theme overrides from JSON |
 | [04](phase_04.md) | API Routes - Core Game Management | Not Started | Create REST API for games, players, themes, and role assignment |
 | [05](phase_05.md) | Admin Interface (Game Master UI) | Not Started | Build Game Master console for creating/managing games |
