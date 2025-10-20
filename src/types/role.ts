@@ -41,37 +41,37 @@ export interface RoleDefinition {
 }
 
 export interface BaseRoles {
-  schemaVersion: string;
+  schema_version: string;
   roles: RoleDefinition[];
-  roleDistributionPresets: Record<string, Record<string, number>>;
+  role_distribution_presets: Record<string, Record<string, number>>;
   metadata: {
-    gameName: string;
-    minPlayers: number;
-    maxPlayers: number;
-    recommendedPlayers: string;
+    game_name: string;
+    min_players: number;
+    max_players: number;
+    recommended_players: string;
     complexity: string;
   };
 }
 
 export interface ThemeRoles {
-  schemaVersion: string;
-  themeId: string;
-  themeName: string;
-  baseTheme: string;
+  schema_version: string;
+  theme_id: string;
+  theme_name: string;
+  base_theme: string;
   description: string;
-  roleMappings: Array<{
-    baseRole: string;
+  role_mappings: Array<{
+    base_role: string;
     overrides: Partial<RoleDefinition>;
   }>;
-  newRoles: RoleDefinition[];
-  roleDistributionPresets: Record<string, Record<string, number>>;
-  gameFlowOverrides?: any;
-  flavorText?: Record<string, string>;
+  new_roles: RoleDefinition[];
+  role_distribution_presets: Record<string, Record<string, number>>;
+  game_flow_overrides?: any;
+  flavor_text?: Record<string, string>;
   metadata: {
-    gameName: string;
-    minPlayers: number;
-    maxPlayers: number;
-    recommendedPlayers: string;
+    game_name: string;
+    min_players: number;
+    max_players: number;
+    recommended_players: string;
     complexity: string;
     author?: string;
     version?: string;
