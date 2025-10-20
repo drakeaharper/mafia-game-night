@@ -70,7 +70,7 @@ Each planning document should follow this structure:
 | [01](phase_01.md) | SQLite Database Setup | ✅ Complete | Create database schema, initialization, and connection |
 | [02](phase_02.md) | TypeScript Types and Models | ✅ Complete | Define types and create type-safe database CRUD functions |
 | [03](phase_03.md) | Role System Loader | ✅ Complete | Load and merge base roles with theme overrides from JSON |
-| [04](phase_04.md) | API Routes - Core Game Management | Not Started | Create REST API for games, players, themes, and role assignment |
+| [04](phase_04.md) | API Routes - Core Game Management | ✅ Complete | Create REST API for games, players, themes, and role assignment |
 | [05](phase_05.md) | Admin Interface (Game Master UI) | Not Started | Build Game Master console for creating/managing games |
 | [06](phase_06.md) | Player Interface | Not Started | Build player join flow and role card display |
 
