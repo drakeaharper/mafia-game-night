@@ -171,6 +171,11 @@ mafia-game-night/
 │   ├── harry-potter-mafia-rules.md
 │   └── harry-potter-roles.json    # Theme overrides/extensions
 │
+├── planning/
+│   ├── phase_00.md                # Phase planning documents
+│   ├── phase_01.md
+│   └── ...
+│
 ├── src/
 │   ├── app/                       # Next.js app directory
 │   │   ├── page.tsx              # Landing page
@@ -310,6 +315,55 @@ mafia-game-night/
 - Integration tests for game flow
 - Manual testing on multiple devices
 - Test with actual game nights!
+
+---
+
+## Phased Planning Methodology
+
+This project follows a structured phased planning approach to break down development into manageable, sequential tasks.
+
+### Planning Structure
+
+All planning documents are stored in the `planning/` directory using the following naming convention:
+
+**Format:** `phase_XX.md` where `XX` is a zero-padded number starting at `00`
+
+**Examples:**
+- `planning/phase_00.md` - First phase (e.g., Initial Next.js setup)
+- `planning/phase_01.md` - Second phase (e.g., Database setup)
+- `planning/phase_02.md` - Third phase (e.g., API routes)
+
+### Sub-phases for Complex Tasks
+
+When a task is larger than a single phase or requires breaking down into multiple related contexts, use decimal notation:
+
+**Format:** `phase_XX.YY.md`
+
+**Examples:**
+- `planning/phase_03.01.md` - First part of phase 3
+- `planning/phase_03.02.md` - Second part of phase 3
+- `planning/phase_03.03.md` - Third part of phase 3
+
+This keeps related tasks grouped together while maintaining clear separation of concerns.
+
+### Planning Best Practices
+
+1. **One Focus Per Phase:** Each phase should have a clear, singular objective
+2. **Sequential Execution:** Phases should build on previous work
+3. **Complete and Test:** Each phase should result in working, testable code
+4. **Document Decisions:** Include rationale for technical choices in the planning doc
+5. **Update Status:** Mark phases as complete in the planning doc when finished
+
+### Planning Document Template
+
+Each planning file should include:
+- **Phase Number & Title**
+- **Objective:** What this phase accomplishes
+- **Prerequisites:** What must be completed before starting
+- **Tasks:** Specific items to complete
+- **Acceptance Criteria:** How to verify the phase is complete
+- **Technical Notes:** Implementation details, gotchas, considerations
+- **Next Steps:** What phase comes after
 
 ---
 
