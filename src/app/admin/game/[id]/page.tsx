@@ -192,8 +192,17 @@ export default function AdminGamePage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-1">Game Master Console</h1>
-        <p className="text-gray-400 mb-6 capitalize">{game.theme.replace('-', ' ')} Theme</p>
+        <div className="mb-6">
+          <a
+            href="/admin"
+            className="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-4"
+          >
+            <span className="mr-2">←</span>
+            Home
+          </a>
+          <h1 className="text-2xl font-bold mb-1">Game Master Console</h1>
+          <p className="text-gray-400 capitalize">{game.theme.replace('-', ' ')} Theme</p>
+        </div>
 
         {/* Game Code */}
         <div className="bg-gray-800 p-6 rounded-lg mb-4 text-center">

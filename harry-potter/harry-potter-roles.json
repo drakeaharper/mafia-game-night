@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "theme_id": "harry-potter",
-  "theme_name": "Death Eaters Among Us",
+  "theme_name": "Harry Potter",
   "base_theme": "classic",
   "description": "A Harry Potter themed variant of Mafia where Death Eaters have infiltrated the Order of the Phoenix.",
 
@@ -186,39 +186,39 @@
 
   "role_distribution_presets": {
     "7_players": {
-      "death_eater": 2,
-      "dumbledore": 1,
-      "hermione_granger": 1,
-      "order_member": 3
+      "mafia": 2,
+      "detective": 1,
+      "doctor": 1,
+      "townsperson": 3
     },
     "10_players": {
-      "death_eater": 3,
-      "dumbledore": 1,
-      "hermione_granger": 1,
-      "order_member": 5
+      "mafia": 3,
+      "detective": 1,
+      "doctor": 1,
+      "townsperson": 5
     },
     "13_players": {
-      "death_eater": 3,
-      "dumbledore": 1,
-      "hermione_granger": 1,
-      "mad_eye_moody": 1,
-      "order_member": 7
+      "mafia": 3,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 7
     },
     "15_players": {
       "voldemort": 1,
-      "death_eater": 3,
-      "dumbledore": 1,
-      "hermione_granger": 1,
-      "mad_eye_moody": 1,
-      "order_member": 8
+      "mafia": 3,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 8
     },
     "18_players": {
       "voldemort": 1,
-      "death_eater": 4,
-      "dumbledore": 1,
-      "hermione_granger": 1,
-      "mad_eye_moody": 1,
-      "order_member": 10
+      "mafia": 4,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 10
     }
   },
 
@@ -245,7 +245,7 @@
   },
 
   "metadata": {
-    "game_name": "Death Eaters Among Us",
+    "game_name": "Harry Potter",
     "min_players": 7,
     "max_players": 999,
     "recommended_players": "10-15",
