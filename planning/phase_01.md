@@ -1,8 +1,8 @@
 # Phase 01: SQLite Database Setup
 
-**Status:** Not Started
-**Started:** -
-**Completed:** -
+**Status:** Complete
+**Started:** 2025-10-19
+**Completed:** 2025-10-19
 
 ## Objective
 Create the SQLite database schema, initialization script, and database helper functions for managing games, players, and events.
@@ -13,14 +13,14 @@ Create the SQLite database schema, initialization script, and database helper fu
 - [x] `src/` directory structure created
 
 ## Tasks
-- [ ] Create database schema SQL file
-- [ ] Create database initialization module (`src/lib/db.ts`)
-- [ ] Write database migration/setup function
-- [ ] Create type-safe query helper functions
-- [ ] Add database to `.gitignore`
-- [ ] Test database creation and basic queries
-- [ ] Create seed data script for testing (optional)
-- [ ] Document database structure in code comments
+- [x] Create database schema SQL file
+- [x] Create database initialization module (`src/lib/db.ts`)
+- [x] Write database migration/setup function
+- [x] Create type-safe query helper functions
+- [x] Add database to `.gitignore`
+- [x] Test database creation and basic queries
+- [x] Create seed data script for testing (optional)
+- [x] Document database structure in code comments
 
 ## Acceptance Criteria
 - [x] Database file is created at `src/data/mafia.db` on first run
