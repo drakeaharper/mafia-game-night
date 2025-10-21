@@ -1,0 +1,257 @@
+{
+  "schema_version": "1.0",
+  "theme_id": "werewolf",
+  "theme_name": "Werewolf",
+  "base_theme": "classic",
+  "description": "Classic werewolf social deduction game where villagers must identify and eliminate werewolves before they're hunted down.",
+
+  "role_mappings": [
+    {
+      "base_role": "mafia",
+      "overrides": {
+        "name": "Werewolf",
+        "description": "You are a Werewolf. Each night, hunt and eliminate a Villager while avoiding detection during the day.",
+        "abilities": [
+          {
+            "id": "night_kill",
+            "name": "Night Hunt",
+            "description": "Work with other Werewolves to choose one Villager to eliminate each night.",
+            "phase": "night",
+            "target": "single_player",
+            "collective": true
+          }
+        ],
+        "card_instructions": [
+          "You are a Werewolf. Keep this secret!",
+          "You know the identities of all other Werewolves.",
+          "Each night, work together to choose a Villager to eliminate.",
+          "During the day, blend in and avoid suspicion.",
+          "Win by equaling or outnumbering the Villagers."
+        ]
+      },
+      "flavor": {
+        "icon": "werewolf",
+        "color": "#4a0000",
+        "flavor_text": "Under the full moon, your true nature emerges..."
+      }
+    },
+    {
+      "base_role": "detective",
+      "overrides": {
+        "name": "Seer",
+        "description": "You are the Seer. Each night, you can investigate one player to learn if they are a Werewolf or Villager.",
+        "abilities": [
+          {
+            "id": "investigate",
+            "name": "Mystical Vision",
+            "description": "Point to one player. The moderator will reveal if they are a Werewolf or Villager.",
+            "phase": "night",
+            "target": "single_player",
+            "collective": false,
+            "uses": "unlimited"
+          }
+        ],
+        "card_instructions": [
+          "You are the Seer. Keep this secret!",
+          "Each night, investigate one player to learn their true nature.",
+          "Use your visions wisely without revealing yourself.",
+          "Win by eliminating all Werewolves."
+        ]
+      },
+      "flavor": {
+        "icon": "seer",
+        "color": "#6b4ca3",
+        "flavor_text": "Your mystical visions reveal the truth..."
+      }
+    },
+    {
+      "base_role": "doctor",
+      "overrides": {
+        "name": "Doctor",
+        "description": "You are the Village Doctor. Each night, you can protect one player from Werewolf attacks.",
+        "abilities": [
+          {
+            "id": "protect",
+            "name": "Medical Protection",
+            "description": "Choose one player to protect from Werewolf attacks. You can protect yourself.",
+            "phase": "night",
+            "target": "single_player",
+            "collective": false,
+            "uses": "unlimited",
+            "restrictions": [
+              "Cannot protect the same player two nights in a row"
+            ]
+          }
+        ],
+        "card_instructions": [
+          "You are the Doctor. Keep this secret!",
+          "Each night, protect one player from Werewolf attacks.",
+          "You cannot protect the same player twice in a row.",
+          "Win by eliminating all Werewolves."
+        ]
+      },
+      "flavor": {
+        "icon": "doctor",
+        "color": "#1e6b3d",
+        "flavor_text": "Your medical expertise can save lives..."
+      }
+    },
+    {
+      "base_role": "vigilante",
+      "overrides": {
+        "name": "Hunter",
+        "description": "You are the Hunter. Your tracking skills and combat prowess allow you to eliminate suspected Werewolves at night.",
+        "abilities": [
+          {
+            "id": "night_kill",
+            "name": "Hunter's Shot",
+            "description": "Choose one player to eliminate during the night. You can do this up to 2 times per game. Be careful not to eliminate innocent Villagers!",
+            "phase": "night",
+            "target": "single_player",
+            "collective": false,
+            "uses": "limited",
+            "max_uses": 2
+          }
+        ],
+        "card_instructions": [
+          "You are the Hunter. Keep this secret!",
+          "You can eliminate up to 2 suspected Werewolves during night phases.",
+          "Use your shots wisely - you might accidentally eliminate a Villager!",
+          "Your hunting skills allow you to take action when needed.",
+          "Win by eliminating all Werewolves."
+        ]
+      },
+      "flavor": {
+        "icon": "hunter",
+        "color": "#8b4513",
+        "flavor_text": "Your silver bullets are ready..."
+      }
+    },
+    {
+      "base_role": "townsperson",
+      "overrides": {
+        "name": "Villager",
+        "description": "You are a regular Villager. Use your voice and vote to identify Werewolves.",
+        "card_instructions": [
+          "You are a Villager.",
+          "You have no special abilities.",
+          "Use logic and discussion to find the Werewolves.",
+          "Vote to eliminate suspected Werewolves.",
+          "Win by eliminating all Werewolves."
+        ]
+      },
+      "flavor": {
+        "icon": "villager",
+        "color": "#5c7a3d",
+        "flavor_text": "You must protect your village from the darkness..."
+      }
+    },
+    {
+      "base_role": "godfather",
+      "overrides": {
+        "name": "Alpha Werewolf",
+        "description": "You are the Alpha Werewolf, leader of the pack. You appear as a Villager to Seer investigations.",
+        "abilities": [
+          {
+            "id": "night_kill",
+            "name": "Alpha Hunt",
+            "description": "Lead the Werewolf pack in choosing one Villager to eliminate each night.",
+            "phase": "night",
+            "target": "single_player",
+            "collective": true
+          },
+          {
+            "id": "investigation_immunity",
+            "name": "Human Disguise",
+            "description": "You appear as a Villager to Seer investigations.",
+            "phase": "passive",
+            "target": "self"
+          }
+        ],
+        "card_instructions": [
+          "You are the Alpha Werewolf. Keep this secret!",
+          "You appear as a Villager to Seer investigations.",
+          "Lead the pack in hunting Villagers each night.",
+          "Win by equaling or outnumbering the Villagers."
+        ]
+      },
+      "flavor": {
+        "icon": "alpha-werewolf",
+        "color": "#2d0000",
+        "flavor_text": "As the Alpha, you command the pack..."
+      }
+    }
+  ],
+
+  "new_roles": [],
+
+  "role_distribution_presets": {
+    "7_players": {
+      "mafia": 2,
+      "detective": 1,
+      "doctor": 1,
+      "townsperson": 3
+    },
+    "10_players": {
+      "mafia": 3,
+      "detective": 1,
+      "doctor": 1,
+      "townsperson": 5
+    },
+    "13_players": {
+      "mafia": 3,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 7
+    },
+    "15_players": {
+      "godfather": 1,
+      "mafia": 3,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 8
+    },
+    "18_players": {
+      "godfather": 1,
+      "mafia": 4,
+      "detective": 1,
+      "doctor": 1,
+      "vigilante": 1,
+      "townsperson": 10
+    }
+  },
+
+  "game_flow_overrides": {
+    "night_order": [
+      "werewolves",
+      "hunter",
+      "doctor",
+      "seer"
+    ],
+    "day_announcement_templates": {
+      "elimination": "Last night, {player_name} was attacked by Werewolves. They were {role}.",
+      "saved": "Last night, Werewolves attacked, but the Doctor saved their target!",
+      "vote_out": "{player_name} has been eliminated by the village. They were {role}."
+    }
+  },
+
+  "flavor_text": {
+    "game_start": "Werewolves have infiltrated the village! Find them before they hunt you all down.",
+    "town_win": "The village has prevailed! All Werewolves have been eliminated.",
+    "mafia_win": "The Werewolves have won! They now control the village.",
+    "night_falls": "Night falls over the village. Everyone close your eyes and go to sleep.",
+    "day_breaks": "Dawn breaks over the village. Everyone open your eyes."
+  },
+
+  "metadata": {
+    "game_name": "Werewolf",
+    "min_players": 7,
+    "max_players": 999,
+    "recommended_players": "10-15",
+    "complexity": "beginner",
+    "author": "Classic",
+    "version": "1.0"
+  }
+}
