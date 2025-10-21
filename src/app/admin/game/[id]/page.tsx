@@ -30,6 +30,17 @@ interface Game {
       };
     } | null;
   }>;
+  votes?: {
+    all: Array<{
+      voterId: string;
+      voterName: string;
+      targetId: string;
+      targetName: string;
+      createdAt: number;
+    }>;
+    counts: Record<string, number>;
+    totalVotes: number;
+  };
 }
 
 export default function AdminGamePage() {
@@ -44,6 +55,13 @@ export default function AdminGamePage() {
   const [urlInput, setUrlInput] = useState('');
   const [codeCopied, setCodeCopied] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
+  const [showTallyConfirm, setShowTallyConfirm] = useState(false);
+  const [showTieModal, setShowTieModal] = useState(false);
+  const [tiedPlayers, setTiedPlayers] = useState<Array<{id: string; name: string; voteCount: number}>>([]);
+  const [selectedTiePlayer, setSelectedTiePlayer] = useState('');
+  const [tallying, setTallying] = useState(false);
+  const [clearing, setClearing] = useState(false);
+  const [showVoteDetails, setShowVoteDetails] = useState(false);
 
   // Initialize base URL on mount
   useEffect(() => {
@@ -197,6 +215,82 @@ export default function AdminGamePage() {
   const handleCancelEdit = () => {
     setUrlInput(baseUrl);
     setEditingUrl(false);
+  };
+
+  // Tally votes
+  const handleTallyVotes = async (targetPlayerId?: string) => {
+    if (!game) return;
+
+    setTallying(true);
+    try {
+      const response = await fetch(`/api/games/${gameId}/tally-votes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ targetPlayerId }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Success - player eliminated
+        setShowTallyConfirm(false);
+        setShowTieModal(false);
+        alert(`${data.eliminatedPlayer.name} has been eliminated with ${data.eliminatedPlayer.voteCount} votes!\n\nVotes have been automatically cleared for the next round.`);
+        fetchGame(); // Refresh game data
+      } else if (data.tie) {
+        // Tie detected - show tie resolution modal
+        setShowTallyConfirm(false);
+        setTiedPlayers(data.tiedPlayers);
+        setShowTieModal(true);
+      } else {
+        // No votes or error
+        alert(data.error || 'Failed to tally votes');
+        setShowTallyConfirm(false);
+      }
+    } catch (error) {
+      console.error('Error tallying votes:', error);
+      alert('Error tallying votes');
+    } finally {
+      setTallying(false);
+    }
+  };
+
+  // Resolve tie
+  const handleResolveTie = () => {
+    if (!selectedTiePlayer) {
+      alert('Please select a player to eliminate');
+      return;
+    }
+    handleTallyVotes(selectedTiePlayer);
+  };
+
+  // Clear votes
+  const handleClearVotes = async () => {
+    if (!confirm('Clear all votes? This cannot be undone.')) {
+      return;
+    }
+
+    setClearing(true);
+    try {
+      const response = await fetch(`/api/games/${gameId}/tally-votes`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert('All votes cleared!');
+        fetchGame(); // Refresh game data
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to clear votes');
+      }
+    } catch (error) {
+      console.error('Error clearing votes:', error);
+      alert('Error clearing votes');
+    } finally {
+      setClearing(false);
+    }
   };
 
   // Check if using localhost
@@ -434,6 +528,210 @@ export default function AdminGamePage() {
             </ul>
           )}
         </div>
+
+        {/* Voting Section */}
+        {game.state === 'active' && game.votes && (
+          <div className="bg-gray-800 p-4 rounded-lg mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-bold">
+                Voting Summary
+                {game.votes.totalVotes > 0 && (
+                  <span className="ml-2 text-sm text-gray-400">
+                    ({game.votes.totalVotes} vote{game.votes.totalVotes !== 1 ? 's' : ''} cast)
+                  </span>
+                )}
+              </h2>
+              {game.votes.totalVotes > 0 && (
+                <button
+                  onClick={() => setShowVoteDetails(!showVoteDetails)}
+                  className="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors"
+                >
+                  {showVoteDetails ? 'Hide Details' : 'Show Details'}
+                </button>
+              )}
+            </div>
+
+            {game.votes.totalVotes === 0 ? (
+              <p className="text-gray-400 text-center py-4">No votes cast yet</p>
+            ) : (
+              <>
+                {/* Vote Counts */}
+                <div className="space-y-2 mb-4">
+                  {Object.entries(game.votes.counts)
+                    .sort(([, a], [, b]) => b - a)
+                    .map(([playerId, count]) => {
+                      const player = game.players.find(p => p.id === playerId);
+                      const maxVotes = Math.max(...Object.values(game.votes!.counts));
+                      const percentage = (count / maxVotes) * 100;
+
+                      return (
+                        <div key={playerId} className="bg-gray-700 p-3 rounded">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium">{player?.name || 'Unknown'}</span>
+                            <span className="text-sm bg-red-900 text-red-300 px-2 py-1 rounded">
+                              {count} vote{count !== 1 ? 's' : ''}
+                            </span>
+                          </div>
+                          <div className="w-full bg-gray-600 rounded-full h-2">
+                            <div
+                              className="bg-red-600 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {/* Vote Details */}
+                {showVoteDetails && (
+                  <div className="bg-gray-700 p-3 rounded mb-4">
+                    <h3 className="text-sm font-bold mb-2">Vote Details</h3>
+                    <div className="space-y-1 text-sm">
+                      {game.votes.all.map((vote, idx) => (
+                        <div key={idx} className="text-gray-300">
+                          <span className="text-blue-300">{vote.voterName}</span>
+                          {' → '}
+                          <span className="text-red-300">{vote.targetName}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tally and Clear Buttons */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowTallyConfirm(true)}
+                    className="flex-1 bg-red-600 hover:bg-red-700 px-4 py-3 rounded font-bold transition-colors"
+                  >
+                    Tally Votes & Eliminate
+                  </button>
+                  <button
+                    onClick={handleClearVotes}
+                    disabled={clearing}
+                    className="bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded font-medium transition-colors disabled:opacity-50"
+                  >
+                    {clearing ? 'Clearing...' : 'Clear Votes'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Tally Confirmation Modal */}
+        {showTallyConfirm && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+              <h2 className="text-2xl font-bold mb-4">Confirm Vote Tally</h2>
+              {game.votes && game.votes.totalVotes > 0 ? (
+                <>
+                  <p className="text-gray-400 mb-4">
+                    This will eliminate the player with the most votes.
+                  </p>
+                  <div className="bg-gray-700 p-3 rounded mb-4">
+                    <h3 className="text-sm font-bold mb-2">Current Votes:</h3>
+                    {Object.entries(game.votes.counts)
+                      .sort(([, a], [, b]) => b - a)
+                      .map(([playerId, count]) => {
+                        const player = game.players.find(p => p.id === playerId);
+                        return (
+                          <div key={playerId} className="text-sm text-gray-300">
+                            {player?.name}: {count} vote{count !== 1 ? 's' : ''}
+                          </div>
+                        );
+                      })}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleTallyVotes()}
+                      disabled={tallying}
+                      className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 px-4 py-3 rounded font-bold transition-colors"
+                    >
+                      {tallying ? 'Tallying...' : 'Confirm Elimination'}
+                    </button>
+                    <button
+                      onClick={() => setShowTallyConfirm(false)}
+                      disabled={tallying}
+                      className="flex-1 bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded font-bold transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-gray-400 mb-4">No votes have been cast yet.</p>
+                  <button
+                    onClick={() => setShowTallyConfirm(false)}
+                    className="w-full bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded font-bold transition-colors"
+                  >
+                    Close
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Tie Resolution Modal */}
+        {showTieModal && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+              <h2 className="text-2xl font-bold mb-4">Vote Tie Detected</h2>
+              <p className="text-gray-400 mb-4">
+                The following players are tied. Select which player to eliminate:
+              </p>
+              <div className="space-y-2 mb-6">
+                {tiedPlayers.map((player) => (
+                  <label
+                    key={player.id}
+                    className={`flex items-center p-3 rounded cursor-pointer transition-colors ${
+                      selectedTiePlayer === player.id
+                        ? 'bg-red-900 border-2 border-red-600'
+                        : 'bg-gray-700 hover:bg-gray-600'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="tiePlayer"
+                      value={player.id}
+                      checked={selectedTiePlayer === player.id}
+                      onChange={(e) => setSelectedTiePlayer(e.target.value)}
+                      className="mr-3"
+                    />
+                    <div className="flex-1">
+                      <span className="font-medium">{player.name}</span>
+                      <span className="ml-2 text-sm text-gray-400">
+                        ({player.voteCount} votes)
+                      </span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleResolveTie}
+                  disabled={!selectedTiePlayer || tallying}
+                  className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed px-4 py-3 rounded font-bold transition-colors"
+                >
+                  {tallying ? 'Eliminating...' : 'Eliminate Selected'}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowTieModal(false);
+                    setSelectedTiePlayer('');
+                  }}
+                  disabled={tallying}
+                  className="flex-1 bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded font-bold transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Issue Cards Button */}
         {game.state === 'waiting' && (

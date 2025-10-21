@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGameById } from '@/lib/models/game';
 import { getPlayersByGameId } from '@/lib/models/player';
+import { getVotesByGame, getVoteCounts } from '@/lib/models/vote';
 
 /**
  * GET /api/games/by-id/[id]/admin
@@ -35,9 +36,37 @@ export async function GET(
       joinedAt: p.joinedAt,
     }));
 
+    // Get vote information
+    const votes = getVotesByGame(id);
+    const voteCounts = getVoteCounts(id);
+
+    // Convert vote counts Map to object
+    const voteCountsObj: Record<string, number> = {};
+    voteCounts.forEach((count, playerId) => {
+      voteCountsObj[playerId] = count;
+    });
+
+    // Create vote details with voter names
+    const voteDetails = votes.map(vote => {
+      const voter = players.find(p => p.id === vote.playerId);
+      const target = players.find(p => p.id === vote.targetId);
+      return {
+        voterId: vote.playerId,
+        voterName: voter?.name || 'Unknown',
+        targetId: vote.targetId,
+        targetName: target?.name || 'Unknown',
+        createdAt: vote.createdAt,
+      };
+    });
+
     return NextResponse.json({
       ...game,
       players: fullPlayers,
+      votes: {
+        all: voteDetails,
+        counts: voteCountsObj,
+        totalVotes: votes.length,
+      },
     });
   } catch (error) {
     console.error('Error getting game for admin:', error);
