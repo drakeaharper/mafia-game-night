@@ -72,7 +72,7 @@ export default function AdminPage() {
               ) : (
                 <>
                   <option value="classic">Classic Mafia</option>
-                  <option value="harry-potter">Death Eaters Among Us</option>
+                  <option value="harry-potter">Harry Potter</option>
                 </>
               )}
             </select>

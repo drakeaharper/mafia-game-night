@@ -248,7 +248,7 @@ export async function POST(request: NextRequest) {
     },
     {
       "id": "harry-potter",
-      "name": "Death Eaters Among Us",
+      "name": "Harry Potter",
       "minPlayers": 7,
       "recommendedPlayers": "10-15"
     }

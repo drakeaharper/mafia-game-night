@@ -1,4 +1,4 @@
-# Death Eaters Among Us
+# Harry Potter
 ## A Harry Potter Mafia Game
 
 ### Game Overview
@@ -18,26 +18,26 @@ Death Eaters have infiltrated the Order of the Phoenix! Each night, they secretl
 **For 7-9 players:**
 - 2 Death Eaters
 - 1 Dumbledore (Seer)
-- 1 Hermione (Healer)
+- 1 Madam Pomfrey (Healer)
 - Remaining players are Order Members
 
 **For 10-13 players:**
 - 3 Death Eaters
 - 1 Dumbledore (Seer)
-- 1 Hermione (Healer)
+- 1 Madam Pomfrey (Healer)
 - Remaining players are Order Members
 
 **For 14-17 players:**
 - 4 Death Eaters
 - 1 Dumbledore (Seer)
-- 1 Hermione (Healer)
+- 1 Madam Pomfrey (Healer)
 - 1 Mad-Eye Moody (Second Seer)
 - Remaining players are Order Members
 
 **For 18+ players:**
 - 5 Death Eaters
 - 1 Dumbledore (Seer)
-- 1 Hermione (Healer)
+- 1 Madam Pomfrey (Healer)
 - 1 Mad-Eye Moody (Second Seer)
 - Remaining players are Order Members
 
@@ -67,19 +67,19 @@ One person serves as the Game Master (Narrator) and does not play. They guide th
 
 **Abilities:**
 - Each night, can investigate one player to learn if they are a Death Eater or Order member
-- Does not know other special roles (Hermione, Mad-Eye)
+- Does not know other special roles (Madam Pomfrey, Mad-Eye)
 - Must use information carefully without revealing their identity
 
 **Win Condition:** All Death Eaters are eliminated.
 
 ---
 
-### HERMIONE GRANGER - The Healer (Good Team)
+### MADAM POMFREY - The Healer (Good Team)
 **Number:** 1
 **Goal:** Protect Order members from Death Eater attacks
 
 **Abilities:**
-- Each night, can protect one player from elimination (including themselves)
+- Each night, can use healing magic to protect one player from elimination (including themselves)
 - If the protected player is targeted by Death Eaters, they survive
 - Cannot protect the same player two nights in a row
 - Does not know who the Death Eaters target
@@ -148,11 +148,11 @@ One person serves as the Game Master (Narrator) and does not play. They guide th
 - GM signals thumbs up (Death Eater) or thumbs down (Order member)
 - **GM:** "Mad-Eye, close your eyes."
 
-#### Step 4: Hermione Protects
-- **GM:** "Hermione, open your eyes. Point to someone you wish to protect tonight."
-- Hermione points to a player (can be themselves)
+#### Step 4: Madam Pomfrey Protects
+- **GM:** "Madam Pomfrey, open your eyes. Point to someone you wish to protect tonight."
+- Madam Pomfrey points to a player (can be themselves)
 - GM notes the protected player
-- **GM:** "Hermione, close your eyes."
+- **GM:** "Madam Pomfrey, close your eyes."
 
 ---
 
@@ -162,7 +162,7 @@ One person serves as the Game Master (Narrator) and does not play. They guide th
 
 #### Step 1: Morning Announcement
 - If someone was eliminated: **GM:** "Last night, [Player Name] was attacked by Death Eaters. They were [role]."
-- If Hermione saved them: **GM:** "Last night, Death Eaters attacked, but their target was protected!"
+- If Madam Pomfrey saved them: **GM:** "Last night, Death Eaters attacked, but their target was protected by healing magic!"
 - Eliminated players are out of the game and cannot speak or vote
 
 #### Step 2: Discussion Period (5-10 minutes)
@@ -219,7 +219,7 @@ The Death Eaters win when they **equal or outnumber** the remaining Order member
 - Keep track of confirmed Order members
 - Consider lying about your role if necessary
 
-### For Hermione:
+### For Madam Pomfrey:
 - Protect yourself early if suspected
 - Try to protect likely Seer candidates
 - Mix up your protection targets
@@ -255,7 +255,7 @@ The Death Eaters win when they **equal or outnumber** the remaining Order member
 2. Death Eaters choose victim
 3. Dumbledore investigates
 4. Mad-Eye investigates (if in game)
-5. Hermione protects
+5. Madam Pomfrey protects
 6. Everyone opens eyes
 
 ### Day Order:
@@ -284,16 +284,14 @@ These can be added later for variety:
 **Roles:**
 - 3 Death Eaters
 - 1 Dumbledore
-- 1 Hermione  
+- 1 Madam Pomfrey
 - 5 Order Members
 
-**Night 1:** Death Eaters target Ron. Hermione protects Harry. Dumbledore investigates Draco (Death Eater). Ron survives (not protected, but Death Eaters chose someone else would make this wrong - let me fix this)
-
-**Night 1:** Death Eaters target Ron. Hermione protects Neville. Dumbledore investigates Draco (Death Eater). Ron is eliminated.
+**Night 1:** Death Eaters target Ron. Madam Pomfrey protects Neville. Dumbledore investigates Draco (Death Eater). Ron is eliminated.
 
 **Day 1:** 9 players remain. Dumbledore subtly suggests Draco is suspicious. After discussion, players vote to send Draco to Azkaban. Draco is revealed as a Death Eater.
 
-**Night 2:** Death Eaters target Hermione. Hermione protects herself. Dumbledore investigates Pansy (Death Eater). Hermione survives.
+**Night 2:** Death Eaters target Madam Pomfrey. Madam Pomfrey protects herself. Dumbledore investigates Pansy (Death Eater). Madam Pomfrey survives.
 
 **Day 2:** GM announces someone was protected. Dumbledore now knows two Death Eaters. Players discuss and vote out Pansy.
 

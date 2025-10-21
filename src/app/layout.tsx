@@ -13,6 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link href="https://fonts.cdnfonts.com/css/harry-potter" rel="stylesheet" />
+      </head>
       <body>{children}</body>
     </html>
   );

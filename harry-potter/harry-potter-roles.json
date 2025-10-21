@@ -57,13 +57,13 @@
     {
       "base_role": "doctor",
       "overrides": {
-        "name": "Hermione Granger",
-        "description": "You are Hermione Granger. Use protective spells to save Order members from Death Eater attacks.",
+        "name": "Madam Pomfrey",
+        "description": "You are Madam Pomfrey, the Hogwarts healer. Use your healing magic to save Order members from Death Eater attacks.",
         "abilities": [
           {
             "id": "protect",
-            "name": "Protego Maxima",
-            "description": "Cast a powerful shield charm on one player to protect them from Death Eaters. You can protect yourself.",
+            "name": "Healing Magic",
+            "description": "Use healing magic on one player to protect them from Death Eaters. You can protect yourself.",
             "phase": "night",
             "target": "single_player",
             "collective": false,
@@ -74,16 +74,16 @@
           }
         ],
         "card_instructions": [
-          "You are Hermione Granger. Keep this secret!",
-          "Each night, cast Protego Maxima on one player.",
+          "You are Madam Pomfrey. Keep this secret!",
+          "Each night, use your healing magic on one player.",
           "You cannot protect the same player twice in a row.",
           "Win by eliminating all Death Eaters."
         ]
       },
       "flavor": {
-        "icon": "hermione",
+        "icon": "pomfrey",
         "color": "#ae0001",
-        "flavor_text": "Your protective spells can save lives..."
+        "flavor_text": "Your healing magic can save lives..."
       }
     },
     {
@@ -227,7 +227,7 @@
       "death_eaters",
       "dumbledore",
       "mad_eye_moody",
-      "hermione_granger"
+      "madam_pomfrey"
     ],
     "day_announcement_templates": {
       "elimination": "Last night, {player_name} was attacked by Death Eaters. They were {role}.",

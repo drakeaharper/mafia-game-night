@@ -16,6 +16,19 @@ interface Game {
     id: string;
     name: string;
     hasRole: boolean;
+    isAlive: boolean;
+    role: string | null;
+    roleData: {
+      name: string;
+      alignment: string;
+      description: string;
+      abilities?: any[];
+      cardInstructions?: string[];
+      flavor?: {
+        color?: string;
+        flavorText?: string;
+      };
+    } | null;
   }>;
 }
 
@@ -41,10 +54,10 @@ export default function AdminGamePage() {
     }
   }, []);
 
-  // Fetch game data
+  // Fetch game data with full role information for admin
   const fetchGame = async () => {
     try {
-      const response = await fetch(`/api/games/by-id/${gameId}`);
+      const response = await fetch(`/api/games/by-id/${gameId}/admin`);
       if (response.ok) {
         const data = await response.json();
         setGame(data);
@@ -66,10 +79,10 @@ export default function AdminGamePage() {
     }
   }, [game?.code, baseUrl]);
 
-  // Poll for updates every 3 seconds
+  // Poll for updates every 5 seconds
   useEffect(() => {
     fetchGame();
-    const interval = setInterval(fetchGame, 3000);
+    const interval = setInterval(fetchGame, 5000);
     return () => clearInterval(interval);
   }, [gameId]);
 
@@ -147,6 +160,30 @@ export default function AdminGamePage() {
         setUrlCopied(true);
         setTimeout(() => setUrlCopied(false), 2000);
       }
+    }
+  };
+
+  // Toggle player alive/eliminated status
+  const togglePlayerStatus = async (playerId: string, currentStatus: boolean) => {
+    try {
+      const response = await fetch(`/api/players/${playerId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isAlive: !currentStatus }),
+      });
+
+      if (response.ok) {
+        // Refresh game data
+        fetchGame();
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to update player status');
+      }
+    } catch (error) {
+      console.error('Error updating player status:', error);
+      alert('Error updating player status');
     }
   };
 
@@ -323,16 +360,77 @@ export default function AdminGamePage() {
             </p>
           ) : (
             <ul className="space-y-2">
-              {game.players.map((player) => (
-                <li key={player.id} className="bg-gray-700 p-3 rounded flex items-center justify-between">
-                  <span>{player.name}</span>
-                  {player.hasRole && (
-                    <span className="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">
-                      Role Assigned
-                    </span>
-                  )}
-                </li>
-              ))}
+              {game.players.map((player) => {
+                const alignmentColors = {
+                  good: 'bg-blue-900 text-blue-300 border-blue-600',
+                  evil: 'bg-red-900 text-red-300 border-red-600',
+                  neutral: 'bg-purple-900 text-purple-300 border-purple-600',
+                };
+
+                const alignmentColor = player.roleData
+                  ? alignmentColors[player.roleData.alignment as keyof typeof alignmentColors]
+                  : 'bg-gray-600 text-gray-300 border-gray-500';
+
+                return (
+                  <li
+                    key={player.id}
+                    className={`p-3 rounded border-2 transition-all ${
+                      player.isAlive
+                        ? 'bg-gray-700 border-gray-600'
+                        : 'bg-gray-800 border-red-900 opacity-70'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`font-medium ${!player.isAlive ? 'line-through text-gray-500' : ''}`}>
+                        {player.name}
+                      </span>
+                      <div className="flex gap-2 items-center">
+                        {player.hasRole ? (
+                          <span className={`text-xs px-2 py-1 rounded border ${alignmentColor}`}>
+                            {player.roleData?.name || 'Unknown'}
+                          </span>
+                        ) : (
+                          <span className="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded">
+                            No Role
+                          </span>
+                        )}
+                        {player.isAlive ? (
+                          <span className="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">
+                            ● Alive
+                          </span>
+                        ) : (
+                          <span className="text-xs bg-red-900 text-red-300 px-2 py-1 rounded">
+                            ☠ Eliminated
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {player.hasRole && player.roleData && (
+                      <div className="mt-2 pt-2 border-t border-gray-600">
+                        <p className="text-xs text-gray-400 mb-1">
+                          <span className="font-semibold">Alignment:</span> {player.roleData.alignment}
+                        </p>
+                        <p className="text-xs text-gray-400 mb-2">
+                          {player.roleData.description}
+                        </p>
+                        {game.state === 'active' && (
+                          <button
+                            onClick={() => togglePlayerStatus(player.id, player.isAlive)}
+                            className={`w-full text-xs px-3 py-2 rounded font-medium transition-colors ${
+                              player.isAlive
+                                ? 'bg-red-900 hover:bg-red-800 text-red-200'
+                                : 'bg-green-900 hover:bg-green-800 text-green-200'
+                            }`}
+                          >
+                            {player.isAlive ? '☠ Eliminate Player' : '❤️ Revive Player'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

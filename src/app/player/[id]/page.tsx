@@ -9,6 +9,7 @@ interface Player {
   gameId: string;
   role: any;
   isAlive: boolean;
+  theme: string;
 }
 
 export default function PlayerPage() {
@@ -34,15 +35,13 @@ export default function PlayerPage() {
   useEffect(() => {
     fetchPlayer();
 
-    // Poll for role assignment if not yet received
+    // Poll for updates (role assignment and status changes)
     const interval = setInterval(() => {
-      if (!player?.role) {
-        fetchPlayer();
-      }
-    }, 3000);
+      fetchPlayer();
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [playerId, player?.role]);
+  }, [playerId]);
 
   if (loading) {
     return (
@@ -102,13 +101,17 @@ export default function PlayerPage() {
     neutral: '⚖️ Neutral',
   };
 
+  // Apply Harry Potter font if theme is harry-potter
+  const isHarryPotter = player.theme === 'harry-potter';
+  const titleFont = isHarryPotter ? "font-['Harry_Potter',_serif]" : '';
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
       <div className="max-w-2xl mx-auto py-8">
         {/* Header */}
         <div className="text-center mb-6">
           <p className="text-gray-400 mb-2">Your Role</p>
-          <h1 className="text-4xl font-bold mb-2">{player.role.name}</h1>
+          <h1 className={`text-4xl font-bold mb-2 ${titleFont}`}>{player.role.name}</h1>
           {player.isAlive ? (
             <p className="text-green-500 font-medium">● Alive</p>
           ) : (
