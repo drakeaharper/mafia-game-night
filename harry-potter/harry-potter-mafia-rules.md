@@ -31,14 +31,14 @@ Death Eaters have infiltrated the Order of the Phoenix! Each night, they secretl
 - 4 Death Eaters
 - 1 Dumbledore (Seer)
 - 1 Madam Pomfrey (Healer)
-- 1 Mad-Eye Moody (Second Seer)
+- 1 Mad-Eye Moody (Vigilante)
 - Remaining players are Order Members
 
 **For 18+ players:**
 - 5 Death Eaters
 - 1 Dumbledore (Seer)
 - 1 Madam Pomfrey (Healer)
-- 1 Mad-Eye Moody (Second Seer)
+- 1 Mad-Eye Moody (Vigilante)
 - Remaining players are Order Members
 
 ### Game Master
@@ -88,14 +88,15 @@ One person serves as the Game Master (Narrator) and does not play. They guide th
 
 ---
 
-### MAD-EYE MOODY - Second Seer (Good Team)
+### MAD-EYE MOODY - The Vigilante (Good Team)
 **Number:** 1 (only in games with 14+ players)
-**Goal:** Help the Order identify Death Eaters
+**Goal:** Eliminate Death Eaters through direct action
 
 **Abilities:**
-- Same as Dumbledore - can investigate one player each night
-- Provides redundancy if Dumbledore is eliminated
-- Does not know Dumbledore's identity
+- Can eliminate one suspected Death Eater during night phases
+- Limited to 2 kills per game - use them wisely!
+- **WARNING:** You might accidentally kill an innocent Order member
+- Acts independently without knowing other players' roles
 
 **Win Condition:** All Death Eaters are eliminated.
 
@@ -136,17 +137,17 @@ One person serves as the Game Master (Narrator) and does not play. They guide th
 - Death Eaters must agree on one victim
 - **GM:** "Death Eaters, close your eyes."
 
-#### Step 2: Dumbledore Investigates
+#### Step 2: Mad-Eye Strikes (if in game and has kills remaining)
+- **GM:** "Mad-Eye Moody, open your eyes. If you wish to eliminate someone tonight, point to your target."
+- Mad-Eye points to a player or shakes head to skip
+- GM notes the target (if any) and remaining uses
+- **GM:** "Mad-Eye, close your eyes."
+
+#### Step 3: Dumbledore Investigates
 - **GM:** "Dumbledore, open your eyes. Point to someone you wish to investigate."
 - Dumbledore points to a player
 - GM silently signals thumbs up (Death Eater) or thumbs down (Order member)
 - **GM:** "Dumbledore, close your eyes."
-
-#### Step 3: Mad-Eye Investigates (if in game)
-- **GM:** "Mad-Eye Moody, open your eyes. Point to someone you wish to investigate."
-- Mad-Eye points to a player
-- GM signals thumbs up (Death Eater) or thumbs down (Order member)
-- **GM:** "Mad-Eye, close your eyes."
 
 #### Step 4: Madam Pomfrey Protects
 - **GM:** "Madam Pomfrey, open your eyes. Point to someone you wish to protect tonight."
@@ -161,8 +162,11 @@ One person serves as the Game Master (Narrator) and does not play. They guide th
 **GM:** "Dawn breaks. Everyone open your eyes."
 
 #### Step 1: Morning Announcement
-- If someone was eliminated: **GM:** "Last night, [Player Name] was attacked by Death Eaters. They were [role]."
-- If Madam Pomfrey saved them: **GM:** "Last night, Death Eaters attacked, but their target was protected by healing magic!"
+- If Death Eaters eliminated someone: **GM:** "Last night, [Player Name] was attacked by Death Eaters. They were [role]."
+- If Mad-Eye eliminated someone: **GM:** "Last night, [Player Name] was eliminated by a vigilante strike. They were [role]."
+- If multiple people were eliminated: Announce all eliminations
+- If Madam Pomfrey saved the Death Eaters' target: **GM:** "Last night, Death Eaters attacked, but their target was protected by healing magic!"
+- If no one died: **GM:** "Last night was quiet. No one was eliminated."
 - Eliminated players are out of the game and cannot speak or vote
 
 #### Step 2: Discussion Period (5-10 minutes)
@@ -213,11 +217,18 @@ The Death Eaters win when they **equal or outnumber** the remaining Order member
 - Create plausible alibis and suspicions
 - Don't defend fellow Death Eaters too obviously
 
-### For Dumbledore/Mad-Eye:
+### For Dumbledore:
 - Investigate suspicious players early
 - Share information strategically (revealing too early makes you a target)
 - Keep track of confirmed Order members
 - Consider lying about your role if necessary
+
+### For Mad-Eye Moody:
+- Don't use your kills immediately - gather information first
+- Consider waiting until Dumbledore identifies a Death Eater
+- Your kills are limited (2 max) - make them count
+- **Be careful!** Killing an innocent Order member helps the Death Eaters
+- You can claim to be a regular Order member to stay hidden
 
 ### For Madam Pomfrey:
 - Protect yourself early if suspected
@@ -253,8 +264,8 @@ The Death Eaters win when they **equal or outnumber** the remaining Order member
 ### Night Order:
 1. Everyone closes eyes
 2. Death Eaters choose victim
-3. Dumbledore investigates
-4. Mad-Eye investigates (if in game)
+3. Mad-Eye Moody eliminates target (if in game and using a kill)
+4. Dumbledore investigates
 5. Madam Pomfrey protects
 6. Everyone opens eyes
 

@@ -90,29 +90,31 @@
       "base_role": "vigilante",
       "overrides": {
         "name": "Mad-Eye Moody",
-        "description": "You are Mad-Eye Moody. Your constant vigilance allows you to investigate players at night.",
+        "description": "You are Mad-Eye Moody. Your constant vigilance and combat experience allow you to take decisive action against suspected Death Eaters.",
         "abilities": [
           {
-            "id": "investigate",
-            "name": "Constant Vigilance",
-            "description": "Investigate one player each night to learn their alignment.",
+            "id": "night_kill",
+            "name": "Vigilante Strike",
+            "description": "Choose one player to eliminate during the night. You can do this up to 2 times per game. Be careful not to eliminate innocent Order members!",
             "phase": "night",
             "target": "single_player",
             "collective": false,
-            "uses": "unlimited"
+            "uses": "limited",
+            "max_uses": 2
           }
         ],
         "card_instructions": [
           "You are Mad-Eye Moody. Keep this secret!",
-          "Each night, investigate one player's alignment.",
-          "You provide backup if Dumbledore is eliminated.",
+          "You can eliminate up to 2 suspected Death Eaters during night phases.",
+          "Use your kills wisely - you might accidentally eliminate an Order member!",
+          "Constant vigilance means taking action when needed.",
           "Win by eliminating all Death Eaters."
         ]
       },
       "flavor": {
         "icon": "moody",
         "color": "#ae0001",
-        "flavor_text": "Constant vigilance! Trust no one..."
+        "flavor_text": "Constant vigilance! When you see a threat, eliminate it..."
       }
     },
     {
@@ -225,8 +227,8 @@
   "game_flow_overrides": {
     "night_order": [
       "death_eaters",
-      "dumbledore",
       "mad_eye_moody",
+      "dumbledore",
       "madam_pomfrey"
     ],
     "day_announcement_templates": {
