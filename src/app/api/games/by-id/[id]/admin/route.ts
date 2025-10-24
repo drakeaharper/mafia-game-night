@@ -3,18 +3,20 @@ import { getGameById } from '@/lib/models/game';
 import { getPlayersByGameId } from '@/lib/models/player';
 import { getVotesByGame, getVoteCounts } from '@/lib/models/vote';
 
+export const runtime = 'edge';
+
 /**
  * GET /api/games/by-id/[id]/admin
  * Get game details with full player role data for Game Master
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
-    const game = getGameById(id);
+    const game = await getGameById(id);
     if (!game) {
       return NextResponse.json(
         { error: 'Game not found' },
@@ -23,7 +25,7 @@ export async function GET(
     }
 
     // Get players for this game
-    const players = getPlayersByGameId(id);
+    const players = await getPlayersByGameId(id);
 
     // Return game with full player data including roles
     const fullPlayers = players.map(p => ({
@@ -37,8 +39,8 @@ export async function GET(
     }));
 
     // Get vote information
-    const votes = getVotesByGame(id);
-    const voteCounts = getVoteCounts(id);
+    const votes = await getVotesByGame(id);
+    const voteCounts = await getVoteCounts(id);
 
     // Convert vote counts Map to object
     const voteCountsObj: Record<string, number> = {};

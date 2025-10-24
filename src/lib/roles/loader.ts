@@ -1,28 +1,32 @@
-import fs from 'fs';
-import path from 'path';
 import { BaseRoles, ThemeRoles } from '@/types/role';
+
+// Static imports for all theme JSON files
+import baseRolesData from '@/../base-rules/base-roles.json';
+import harryPotterRolesData from '@/../harry-potter/harry-potter-roles.json';
+import werewolfRolesData from '@/../werewolf/werewolf-roles.json';
+
+// Type-safe imports
+const BASE_ROLES = baseRolesData as BaseRoles;
+const THEME_ROLES: Record<string, ThemeRoles> = {
+  'harry-potter': harryPotterRolesData as ThemeRoles,
+  'werewolf': werewolfRolesData as ThemeRoles,
+};
+
+// List of all available themes
+const AVAILABLE_THEMES = ['classic', 'harry-potter', 'werewolf'] as const;
 
 /**
  * Load base roles from base-rules/base-roles.json
  */
 export function loadBaseRoles(): BaseRoles {
-  const filePath = path.join(process.cwd(), 'base-rules', 'base-roles.json');
-  const content = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(content) as BaseRoles;
+  return BASE_ROLES;
 }
 
 /**
  * Load theme roles from <theme-id>/<theme-id>-roles.json
  */
 export function loadThemeRoles(themeId: string): ThemeRoles | null {
-  const filePath = path.join(process.cwd(), themeId, `${themeId}-roles.json`);
-
-  if (!fs.existsSync(filePath)) {
-    return null;
-  }
-
-  const content = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(content) as ThemeRoles;
+  return THEME_ROLES[themeId] || null;
 }
 
 /**
@@ -30,23 +34,5 @@ export function loadThemeRoles(themeId: string): ThemeRoles | null {
  * Returns array of theme IDs
  */
 export function listAvailableThemes(): string[] {
-  const baseDir = process.cwd();
-  const themes: string[] = ['classic']; // Always include classic (base rules)
-
-  try {
-    const dirs = fs.readdirSync(baseDir, { withFileTypes: true });
-
-    for (const dir of dirs) {
-      if (dir.isDirectory() && dir.name !== 'base-rules' && !dir.name.startsWith('.')) {
-        const rolesFile = path.join(baseDir, dir.name, `${dir.name}-roles.json`);
-        if (fs.existsSync(rolesFile)) {
-          themes.push(dir.name);
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Error listing themes:', error);
-  }
-
-  return themes;
+  return [...AVAILABLE_THEMES];
 }

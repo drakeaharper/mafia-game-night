@@ -15,8 +15,9 @@ export default function AdminPage() {
     fetch('/api/themes')
       .then(res => res.json())
       .then(data => {
-        if (data.themes) {
-          setThemes(data.themes);
+        const typedData = data as { themes?: any[] };
+        if (typedData.themes) {
+          setThemes(typedData.themes);
         }
       })
       .catch(err => console.error('Error fetching themes:', err));
@@ -32,10 +33,10 @@ export default function AdminPage() {
       });
 
       if (response.ok) {
-        const game = await response.json();
+        const game = await response.json() as { id: string };
         router.push(`/admin/game/${game.id}`);
       } else {
-        const error = await response.json();
+        const error = await response.json() as { error?: string };
         alert(error.error || 'Failed to create game');
       }
     } catch (error) {

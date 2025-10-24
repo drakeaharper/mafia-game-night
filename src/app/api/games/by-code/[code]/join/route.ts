@@ -2,17 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGameByCode } from '@/lib/models/game';
 import { createPlayer, isPlayerNameTaken } from '@/lib/models/player';
 
+export const runtime = 'edge';
+
 /**
  * POST /api/games/by-code/[code]/join
  * Join a game by code
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
-    const { code } = params;
-    const body = await request.json();
+    const { code } = await params;
+    const body = await request.json() as { name: string };
     const { name } = body;
 
     // Validate input
@@ -31,7 +33,7 @@ export async function POST(
     }
 
     // Find game by code
-    const game = getGameByCode(code);
+    const game = await getGameByCode(code);
     if (!game) {
       return NextResponse.json(
         { error: 'Game not found' },
@@ -48,7 +50,7 @@ export async function POST(
     }
 
     // Check if name is already taken
-    if (isPlayerNameTaken(game.id, name.trim())) {
+    if (await isPlayerNameTaken(game.id, name.trim())) {
       return NextResponse.json(
         { error: 'Name is already taken in this game' },
         { status: 409 }
@@ -56,7 +58,7 @@ export async function POST(
     }
 
     // Create player
-    const player = createPlayer({
+    const player = await createPlayer({
       gameId: game.id,
       name: name.trim(),
     });

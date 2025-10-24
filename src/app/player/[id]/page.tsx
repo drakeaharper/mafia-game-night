@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
+export const runtime = 'edge';
 import { useParams } from 'next/navigation';
 
 interface Player {
@@ -38,7 +40,7 @@ export default function PlayerPage() {
     try {
       const response = await fetch(`/api/players/${playerId}`);
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as Player;
         setPlayer(data);
       }
     } catch (error) {
@@ -54,7 +56,7 @@ export default function PlayerPage() {
     try {
       const response = await fetch(`/api/games/${player.gameId}/players`);
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as { players: PlayerListItem[] };
         setPlayerList(data.players);
       }
     } catch (error) {
@@ -66,11 +68,11 @@ export default function PlayerPage() {
     try {
       const response = await fetch(`/api/players/${playerId}/vote`);
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as { hasVoted?: boolean; targetId?: string; targetName?: string };
         if (data.hasVoted) {
           setCurrentVote({
-            targetId: data.targetId,
-            targetName: data.targetName,
+            targetId: data.targetId!,
+            targetName: data.targetName!,
           });
         } else {
           // Clear vote state when votes are cleared on backend
@@ -133,7 +135,7 @@ export default function PlayerPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as { targetName: string };
         setCurrentVote({
           targetId: voteTarget,
           targetName: data.targetName,
@@ -141,7 +143,7 @@ export default function PlayerPage() {
         setShowVoteModal(false);
         setVoteTarget('');
       } else {
-        const error = await response.json();
+        const error = await response.json() as { error?: string };
         alert(error.error || 'Failed to submit vote');
       }
     } catch (error) {

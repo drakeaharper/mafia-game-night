@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+
+export const runtime = 'edge';
 import { useParams, useRouter } from 'next/navigation';
 
 export default function JoinGamePage() {
@@ -23,10 +25,10 @@ export default function JoinGamePage() {
       });
 
       if (response.ok) {
-        const player = await response.json();
+        const player = await response.json() as { id: string };
         router.push(`/player/${player.id}`);
       } else {
-        const error = await response.json();
+        const error = await response.json() as { error?: string };
         alert(error.error || 'Failed to join game');
       }
     } catch (error) {

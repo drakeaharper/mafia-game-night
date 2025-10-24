@@ -11,7 +11,7 @@
       "overrides": {
         "name": "Death Eater",
         "description": "You are a Death Eater serving the Dark Lord. Eliminate Order members while avoiding detection.",
-        "card_instructions": [
+        "cardInstructions": [
           "You are a Death Eater. Keep this secret!",
           "Your Dark Mark burns, revealing other Death Eaters to you.",
           "Each night, work with fellow Death Eaters to eliminate an Order member.",
@@ -22,7 +22,7 @@
       "flavor": {
         "icon": "dark-mark",
         "color": "#1a472a",
-        "flavor_text": "The Dark Mark burns on your arm..."
+        "flavorText": "The Dark Mark burns on your arm..."
       }
     },
     {
@@ -41,7 +41,7 @@
             "uses": "unlimited"
           }
         ],
-        "card_instructions": [
+        "cardInstructions": [
           "You are Dumbledore. Keep this secret!",
           "Each night, you can sense if someone has the Dark Mark.",
           "Use your wisdom carefully without revealing yourself.",
@@ -51,7 +51,7 @@
       "flavor": {
         "icon": "dumbledore",
         "color": "#740001",
-        "flavor_text": "Your wisdom allows you to sense dark magic..."
+        "flavorText": "Your wisdom allows you to sense dark magic..."
       }
     },
     {
@@ -73,7 +73,7 @@
             ]
           }
         ],
-        "card_instructions": [
+        "cardInstructions": [
           "You are Madam Pomfrey. Keep this secret!",
           "Each night, use your healing magic on one player.",
           "You cannot protect the same player twice in a row.",
@@ -83,7 +83,7 @@
       "flavor": {
         "icon": "pomfrey",
         "color": "#ae0001",
-        "flavor_text": "Your healing magic can save lives..."
+        "flavorText": "Your healing magic can save lives..."
       }
     },
     {
@@ -100,10 +100,10 @@
             "target": "single_player",
             "collective": false,
             "uses": "limited",
-            "max_uses": 2
+            "maxUses": 2
           }
         ],
-        "card_instructions": [
+        "cardInstructions": [
           "You are Mad-Eye Moody. Keep this secret!",
           "You can eliminate up to 2 suspected Death Eaters during night phases.",
           "Use your kills wisely - you might accidentally eliminate an Order member!",
@@ -114,7 +114,7 @@
       "flavor": {
         "icon": "moody",
         "color": "#ae0001",
-        "flavor_text": "Constant vigilance! When you see a threat, eliminate it..."
+        "flavorText": "Constant vigilance! When you see a threat, eliminate it..."
       }
     },
     {
@@ -122,7 +122,7 @@
       "overrides": {
         "name": "Order Member",
         "description": "You are a member of the Order of the Phoenix. Use your voice and vote to identify Death Eaters.",
-        "card_instructions": [
+        "cardInstructions": [
           "You are an Order Member.",
           "You have no special abilities.",
           "Use logic and discussion to find the Death Eaters.",
@@ -133,7 +133,7 @@
       "flavor": {
         "icon": "order-phoenix",
         "color": "#ae0001",
-        "flavor_text": "You fight for the light against the darkness..."
+        "flavorText": "You fight for the light against the darkness..."
       }
     }
   ],
@@ -167,12 +167,12 @@
           "description": "You know the identities of all Death Eaters."
         }
       ],
-      "win_condition": {
+      "winCondition": {
         "type": "equal_or_outnumber",
         "target": "town",
         "description": "Death Eaters win when they equal or outnumber the Order members."
       },
-      "card_instructions": [
+      "cardInstructions": [
         "You are the Dark Lord. Keep this secret!",
         "You appear innocent to Dumbledore's investigations.",
         "Lead the Death Eaters in eliminating the Order.",
@@ -181,7 +181,7 @@
       "flavor": {
         "icon": "voldemort",
         "color": "#0d0d0d",
-        "flavor_text": "The Dark Lord rises again..."
+        "flavorText": "The Dark Lord rises again..."
       }
     }
   ],

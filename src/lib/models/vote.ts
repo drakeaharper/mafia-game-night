@@ -1,4 +1,4 @@
-import { getDb } from '../db';
+import { getDb } from '../db-unified';
 import { Vote, CreateVoteInput } from '@/types/vote';
 import { nanoid } from 'nanoid';
 
@@ -6,13 +6,13 @@ import { nanoid } from 'nanoid';
  * Create or update a vote
  * If the player has already voted, this will update their vote to the new target
  */
-export function createOrUpdateVote(input: CreateVoteInput): Vote {
+export async function createOrUpdateVote(input: CreateVoteInput): Promise<Vote> {
   const db = getDb();
   const id = nanoid();
   const now = Date.now();
 
   // Check if player has already voted in this game
-  const existingVote = getVoteByPlayer(input.playerId, input.gameId);
+  const existingVote = await getVoteByPlayer(input.playerId, input.gameId);
 
   if (existingVote) {
     // Update existing vote
@@ -21,7 +21,7 @@ export function createOrUpdateVote(input: CreateVoteInput): Vote {
       SET target_id = ?, created_at = ?
       WHERE player_id = ? AND game_id = ?
     `);
-    stmt.run(input.targetId, now, input.playerId, input.gameId);
+    await stmt.bind(input.targetId, now, input.playerId, input.gameId).run();
 
     return {
       id: existingVote.id,
@@ -36,7 +36,7 @@ export function createOrUpdateVote(input: CreateVoteInput): Vote {
       INSERT INTO votes (id, game_id, player_id, target_id, created_at)
       VALUES (?, ?, ?, ?, ?)
     `);
-    stmt.run(id, input.gameId, input.playerId, input.targetId, now);
+    await stmt.bind(id, input.gameId, input.playerId, input.targetId, now).run();
 
     return {
       id,
@@ -51,13 +51,13 @@ export function createOrUpdateVote(input: CreateVoteInput): Vote {
 /**
  * Get a vote by player ID and game ID
  */
-export function getVoteByPlayer(playerId: string, gameId: string): Vote | null {
+export async function getVoteByPlayer(playerId: string, gameId: string): Promise<Vote | null> {
   const db = getDb();
   const stmt = db.prepare(`
     SELECT * FROM votes
     WHERE player_id = ? AND game_id = ?
   `);
-  const row = stmt.get(playerId, gameId) as any;
+  const row = await stmt.bind(playerId, gameId).get() as any;
 
   if (!row) return null;
 
@@ -73,14 +73,14 @@ export function getVoteByPlayer(playerId: string, gameId: string): Vote | null {
 /**
  * Get all votes for a game
  */
-export function getVotesByGame(gameId: string): Vote[] {
+export async function getVotesByGame(gameId: string): Promise<Vote[]> {
   const db = getDb();
   const stmt = db.prepare(`
     SELECT * FROM votes
     WHERE game_id = ?
     ORDER BY created_at DESC
   `);
-  const rows = stmt.all(gameId) as any[];
+  const rows = await stmt.bind(gameId).all() as any[];
 
   return rows.map(row => ({
     id: row.id,
@@ -94,25 +94,25 @@ export function getVotesByGame(gameId: string): Vote[] {
 /**
  * Delete a vote
  */
-export function deleteVote(voteId: string): void {
+export async function deleteVote(voteId: string): Promise<void> {
   const db = getDb();
   const stmt = db.prepare('DELETE FROM votes WHERE id = ?');
-  stmt.run(voteId);
+  await stmt.bind(voteId).run();
 }
 
 /**
  * Delete all votes for a game
  */
-export function deleteVotesByGame(gameId: string): void {
+export async function deleteVotesByGame(gameId: string): Promise<void> {
   const db = getDb();
   const stmt = db.prepare('DELETE FROM votes WHERE game_id = ?');
-  stmt.run(gameId);
+  await stmt.bind(gameId).run();
 }
 
 /**
  * Get vote count for each target in a game
  */
-export function getVoteCounts(gameId: string): Map<string, number> {
+export async function getVoteCounts(gameId: string): Promise<Map<string, number>> {
   const db = getDb();
   const stmt = db.prepare(`
     SELECT target_id, COUNT(*) as count
@@ -120,7 +120,7 @@ export function getVoteCounts(gameId: string): Map<string, number> {
     WHERE game_id = ?
     GROUP BY target_id
   `);
-  const rows = stmt.all(gameId) as any[];
+  const rows = await stmt.bind(gameId).all() as any[];
 
   const counts = new Map<string, number>();
   rows.forEach(row => {
@@ -134,8 +134,8 @@ export function getVoteCounts(gameId: string): Map<string, number> {
  * Get player(s) with the most votes in a game
  * Returns array to handle ties
  */
-export function getPlayersWithMostVotes(gameId: string): { playerId: string; voteCount: number }[] {
-  const voteCounts = getVoteCounts(gameId);
+export async function getPlayersWithMostVotes(gameId: string): Promise<{ playerId: string; voteCount: number }[]> {
+  const voteCounts = await getVoteCounts(gameId);
 
   if (voteCounts.size === 0) {
     return [];

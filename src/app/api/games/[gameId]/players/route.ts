@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGameById } from '@/lib/models/game';
 import { getPlayersByGameId } from '@/lib/models/player';
 
+export const runtime = 'edge';
+
 /**
  * GET /api/games/[gameId]/players
  * Get all players in a game (for player list view)
@@ -9,13 +11,13 @@ import { getPlayersByGameId } from '@/lib/models/player';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { gameId: string } }
+  { params }: { params: Promise<{ gameId: string }> }
 ) {
   try {
-    const { gameId } = params;
+    const { gameId } = await params;
 
     // Verify game exists
-    const game = getGameById(gameId);
+    const game = await getGameById(gameId);
     if (!game) {
       return NextResponse.json(
         { error: 'Game not found' },
@@ -24,7 +26,7 @@ export async function GET(
     }
 
     // Get all players
-    const players = getPlayersByGameId(gameId);
+    const players = await getPlayersByGameId(gameId);
 
     // Format player list
     // Alive players: show name and status only

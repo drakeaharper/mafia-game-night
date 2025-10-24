@@ -3,6 +3,8 @@ import { getGameById } from '@/lib/models/game';
 import { getPlayerById, eliminatePlayer } from '@/lib/models/player';
 import { getPlayersWithMostVotes, getVoteCounts, deleteVotesByGame } from '@/lib/models/vote';
 
+export const runtime = 'edge';
+
 /**
  * POST /api/games/[gameId]/tally-votes
  * Tally votes and eliminate the player with the most votes
@@ -10,15 +12,15 @@ import { getPlayersWithMostVotes, getVoteCounts, deleteVotesByGame } from '@/lib
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { gameId: string } }
+  { params }: { params: Promise<{ gameId: string }> }
 ) {
   try {
-    const { gameId } = params;
-    const body = await request.json();
+    const { gameId } = await params;
+    const body = await request.json() as { targetPlayerId?: string };
     const { targetPlayerId } = body; // Optional: for tie resolution
 
     // Verify game exists
-    const game = getGameById(gameId);
+    const game = await getGameById(gameId);
     if (!game) {
       return NextResponse.json(
         { error: 'Game not found' },
@@ -27,7 +29,7 @@ export async function POST(
     }
 
     // Get vote counts
-    const voteCounts = getVoteCounts(gameId);
+    const voteCounts = await getVoteCounts(gameId);
     const voteCountsObj: Record<string, number> = {};
     voteCounts.forEach((count, playerId) => {
       voteCountsObj[playerId] = count;
@@ -43,7 +45,7 @@ export async function POST(
     }
 
     // Get player(s) with most votes
-    const topPlayers = getPlayersWithMostVotes(gameId);
+    const topPlayers = await getPlayersWithMostVotes(gameId);
 
     // Handle tie
     if (topPlayers.length > 1) {
@@ -59,7 +61,7 @@ export async function POST(
         }
 
         // Eliminate the selected player
-        const target = getPlayerById(targetPlayerId);
+        const target = await getPlayerById(targetPlayerId);
         if (!target) {
           return NextResponse.json(
             { error: 'Target player not found' },
@@ -67,10 +69,10 @@ export async function POST(
           );
         }
 
-        eliminatePlayer(targetPlayerId);
+        await eliminatePlayer(targetPlayerId);
 
         // Automatically clear votes after successful elimination
-        deleteVotesByGame(gameId);
+        await deleteVotesByGame(gameId);
 
         return NextResponse.json({
           success: true,
@@ -86,14 +88,14 @@ export async function POST(
       }
 
       // Return tie information for admin to resolve
-      const tiedPlayers = topPlayers.map(tp => {
-        const player = getPlayerById(tp.playerId);
+      const tiedPlayers = await Promise.all(topPlayers.map(async tp => {
+        const player = await getPlayerById(tp.playerId);
         return {
           id: tp.playerId,
           name: player?.name || 'Unknown',
           voteCount: tp.voteCount,
         };
-      });
+      }));
 
       return NextResponse.json({
         success: false,
@@ -105,7 +107,7 @@ export async function POST(
 
     // Clear winner - eliminate them
     const winner = topPlayers[0];
-    const target = getPlayerById(winner.playerId);
+    const target = await getPlayerById(winner.playerId);
 
     if (!target) {
       return NextResponse.json(
@@ -121,10 +123,10 @@ export async function POST(
       );
     }
 
-    eliminatePlayer(winner.playerId);
+    await eliminatePlayer(winner.playerId);
 
     // Automatically clear votes after successful elimination
-    deleteVotesByGame(gameId);
+    await deleteVotesByGame(gameId);
 
     return NextResponse.json({
       success: true,
@@ -151,13 +153,13 @@ export async function POST(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { gameId: string } }
+  { params }: { params: Promise<{ gameId: string }> }
 ) {
   try {
-    const { gameId } = params;
+    const { gameId } = await params;
 
     // Verify game exists
-    const game = getGameById(gameId);
+    const game = await getGameById(gameId);
     if (!game) {
       return NextResponse.json(
         { error: 'Game not found' },
@@ -166,7 +168,7 @@ export async function DELETE(
     }
 
     // Delete all votes
-    deleteVotesByGame(gameId);
+    await deleteVotesByGame(gameId);
 
     return NextResponse.json({
       success: true,

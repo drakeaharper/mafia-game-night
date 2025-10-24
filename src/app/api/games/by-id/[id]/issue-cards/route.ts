@@ -3,19 +3,21 @@ import { getGameById, updateGameState } from '@/lib/models/game';
 import { getPlayersByGameId, assignRole } from '@/lib/models/player';
 import { generateRolePool } from '@/lib/roles';
 
+export const runtime = 'edge';
+
 /**
  * POST /api/games/by-id/[id]/issue-cards
  * Issue role cards to all players in a game
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Get game
-    const game = getGameById(id);
+    const game = await getGameById(id);
     if (!game) {
       return NextResponse.json(
         { error: 'Game not found' },
@@ -32,7 +34,7 @@ export async function POST(
     }
 
     // Get players
-    const players = getPlayersByGameId(id);
+    const players = await getPlayersByGameId(id);
 
     // Check if we have enough players
     if (players.length < game.config.playerCount) {
@@ -56,13 +58,14 @@ export async function POST(
     }
 
     // Assign roles to players
-    players.forEach((player, index) => {
+    for (let index = 0; index < players.length; index++) {
+      const player = players[index];
       const role = rolePool[index];
-      assignRole(player.id, role.id, role);
-    });
+      await assignRole(player.id, role.id, role);
+    }
 
     // Update game state to active
-    updateGameState(id, 'active');
+    await updateGameState(id, 'active');
 
     return NextResponse.json({
       success: true,

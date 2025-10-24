@@ -1,20 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPlayerById, eliminatePlayer, revivePlayer } from '@/lib/models/player';
 
+export const runtime = 'edge';
+
 /**
  * PATCH /api/players/[id]/status
  * Update player alive/eliminated status
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
-    const body = await request.json();
+    const { id } = await params;
+    const body = await request.json() as { isAlive: boolean };
 
     // Validate player exists
-    const player = getPlayerById(id);
+    const player = await getPlayerById(id);
     if (!player) {
       return NextResponse.json(
         { error: 'Player not found' },
@@ -32,13 +34,13 @@ export async function PATCH(
 
     // Update player status
     if (body.isAlive) {
-      revivePlayer(id);
+      await revivePlayer(id);
     } else {
-      eliminatePlayer(id);
+      await eliminatePlayer(id);
     }
 
     // Return updated player data
-    const updatedPlayer = getPlayerById(id);
+    const updatedPlayer = await getPlayerById(id);
     return NextResponse.json({
       id: updatedPlayer!.id,
       name: updatedPlayer!.name,

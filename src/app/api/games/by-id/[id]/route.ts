@@ -2,18 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGameById } from '@/lib/models/game';
 import { getPlayersByGameId } from '@/lib/models/player';
 
+export const runtime = 'edge';
+
 /**
  * GET /api/games/by-id/[id]
  * Get game details with player list
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
-    const game = getGameById(id);
+    const game = await getGameById(id);
     if (!game) {
       return NextResponse.json(
         { error: 'Game not found' },
@@ -22,7 +24,7 @@ export async function GET(
     }
 
     // Get players for this game
-    const players = getPlayersByGameId(id);
+    const players = await getPlayersByGameId(id);
 
     // Return game with sanitized player list (don't expose roles)
     const sanitizedPlayers = players.map(p => ({

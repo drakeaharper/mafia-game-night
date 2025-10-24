@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
+export const runtime = 'edge';
 import { useParams } from 'next/navigation';
 import QRCode from 'qrcode';
 
@@ -77,7 +79,7 @@ export default function AdminGamePage() {
     try {
       const response = await fetch(`/api/games/by-id/${gameId}/admin`);
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as Game;
         setGame(data);
       }
     } catch (error) {
@@ -118,7 +120,7 @@ export default function AdminGamePage() {
         fetchGame(); // Refresh game state
         alert('Cards issued! Players can now view their roles.');
       } else {
-        const error = await response.json();
+        const error = await response.json() as { error?: string };
         alert(error.error || 'Failed to issue cards');
       }
     } catch (error) {
@@ -196,7 +198,7 @@ export default function AdminGamePage() {
         // Refresh game data
         fetchGame();
       } else {
-        const error = await response.json();
+        const error = await response.json() as { error?: string };
         alert(error.error || 'Failed to update player status');
       }
     } catch (error) {
@@ -231,18 +233,24 @@ export default function AdminGamePage() {
         body: JSON.stringify({ targetPlayerId }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as {
+        success?: boolean;
+        tie?: boolean;
+        tiedPlayers?: Array<{id: string; name: string; voteCount: number}>;
+        eliminatedPlayer?: {name: string; voteCount: number};
+        error?: string;
+      };
 
       if (data.success) {
         // Success - player eliminated
         setShowTallyConfirm(false);
         setShowTieModal(false);
-        alert(`${data.eliminatedPlayer.name} has been eliminated with ${data.eliminatedPlayer.voteCount} votes!\n\nVotes have been automatically cleared for the next round.`);
+        alert(`${data.eliminatedPlayer?.name} has been eliminated with ${data.eliminatedPlayer?.voteCount} votes!\n\nVotes have been automatically cleared for the next round.`);
         fetchGame(); // Refresh game data
       } else if (data.tie) {
         // Tie detected - show tie resolution modal
         setShowTallyConfirm(false);
-        setTiedPlayers(data.tiedPlayers);
+        setTiedPlayers(data.tiedPlayers || []);
         setShowTieModal(true);
       } else {
         // No votes or error
@@ -282,7 +290,7 @@ export default function AdminGamePage() {
         alert('All votes cleared!');
         fetchGame(); // Refresh game data
       } else {
-        const error = await response.json();
+        const error = await response.json() as { error?: string };
         alert(error.error || 'Failed to clear votes');
       }
     } catch (error) {

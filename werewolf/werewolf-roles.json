@@ -21,7 +21,7 @@
             "collective": true
           }
         ],
-        "card_instructions": [
+        "cardInstructions": [
           "You are a Werewolf. Keep this secret!",
           "You know the identities of all other Werewolves.",
           "Each night, work together to choose a Villager to eliminate.",
@@ -32,7 +32,7 @@
       "flavor": {
         "icon": "werewolf",
         "color": "#4a0000",
-        "flavor_text": "Under the full moon, your true nature emerges..."
+        "flavorText": "Under the full moon, your true nature emerges..."
       }
     },
     {
@@ -51,7 +51,7 @@
             "uses": "unlimited"
           }
         ],
-        "card_instructions": [
+        "cardInstructions": [
           "You are the Seer. Keep this secret!",
           "Each night, investigate one player to learn their true nature.",
           "Use your visions wisely without revealing yourself.",
@@ -61,7 +61,7 @@
       "flavor": {
         "icon": "seer",
         "color": "#6b4ca3",
-        "flavor_text": "Your mystical visions reveal the truth..."
+        "flavorText": "Your mystical visions reveal the truth..."
       }
     },
     {
@@ -83,7 +83,7 @@
             ]
           }
         ],
-        "card_instructions": [
+        "cardInstructions": [
           "You are the Doctor. Keep this secret!",
           "Each night, protect one player from Werewolf attacks.",
           "You cannot protect the same player twice in a row.",
@@ -93,7 +93,7 @@
       "flavor": {
         "icon": "doctor",
         "color": "#1e6b3d",
-        "flavor_text": "Your medical expertise can save lives..."
+        "flavorText": "Your medical expertise can save lives..."
       }
     },
     {
@@ -110,10 +110,10 @@
             "target": "single_player",
             "collective": false,
             "uses": "limited",
-            "max_uses": 2
+            "maxUses": 2
           }
         ],
-        "card_instructions": [
+        "cardInstructions": [
           "You are the Hunter. Keep this secret!",
           "You can eliminate up to 2 suspected Werewolves during night phases.",
           "Use your shots wisely - you might accidentally eliminate a Villager!",
@@ -124,7 +124,7 @@
       "flavor": {
         "icon": "hunter",
         "color": "#8b4513",
-        "flavor_text": "Your silver bullets are ready..."
+        "flavorText": "Your silver bullets are ready..."
       }
     },
     {
@@ -132,7 +132,7 @@
       "overrides": {
         "name": "Villager",
         "description": "You are a regular Villager. Use your voice and vote to identify Werewolves.",
-        "card_instructions": [
+        "cardInstructions": [
           "You are a Villager.",
           "You have no special abilities.",
           "Use logic and discussion to find the Werewolves.",
@@ -143,7 +143,7 @@
       "flavor": {
         "icon": "villager",
         "color": "#5c7a3d",
-        "flavor_text": "You must protect your village from the darkness..."
+        "flavorText": "You must protect your village from the darkness..."
       }
     },
     {
@@ -168,7 +168,7 @@
             "target": "self"
           }
         ],
-        "card_instructions": [
+        "cardInstructions": [
           "You are the Alpha Werewolf. Keep this secret!",
           "You appear as a Villager to Seer investigations.",
           "Lead the pack in hunting Villagers each night.",
@@ -178,7 +178,7 @@
       "flavor": {
         "icon": "alpha-werewolf",
         "color": "#2d0000",
-        "flavor_text": "As the Alpha, you command the pack..."
+        "flavorText": "As the Alpha, you command the pack..."
       }
     }
   ],

@@ -2,17 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPlayerById } from '@/lib/models/player';
 import { createOrUpdateVote, getVoteByPlayer } from '@/lib/models/vote';
 
+export const runtime = 'edge';
+
 /**
  * POST /api/players/[id]/vote
  * Submit a vote for elimination
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: playerId } = params;
-    const body = await request.json();
+    const { id: playerId } = await params;
+    const body = await request.json() as { targetId: string };
     const { targetId } = body;
 
     // Validate request
@@ -24,7 +26,7 @@ export async function POST(
     }
 
     // Get voting player
-    const player = getPlayerById(playerId);
+    const player = await getPlayerById(playerId);
     if (!player) {
       return NextResponse.json(
         { error: 'Player not found' },
@@ -41,7 +43,7 @@ export async function POST(
     }
 
     // Get target player
-    const target = getPlayerById(targetId);
+    const target = await getPlayerById(targetId);
     if (!target) {
       return NextResponse.json(
         { error: 'Target player not found' },
@@ -74,7 +76,7 @@ export async function POST(
     }
 
     // Create or update vote
-    createOrUpdateVote({
+    await createOrUpdateVote({
       gameId: player.gameId,
       playerId,
       targetId,
@@ -100,13 +102,13 @@ export async function POST(
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id: playerId } = params;
+    const { id: playerId } = await params;
 
     // Get player
-    const player = getPlayerById(playerId);
+    const player = await getPlayerById(playerId);
     if (!player) {
       return NextResponse.json(
         { error: 'Player not found' },
@@ -115,7 +117,7 @@ export async function GET(
     }
 
     // Get vote
-    const vote = getVoteByPlayer(playerId, player.gameId);
+    const vote = await getVoteByPlayer(playerId, player.gameId);
 
     if (!vote) {
       return NextResponse.json({
@@ -124,7 +126,7 @@ export async function GET(
     }
 
     // Get target player name
-    const target = getPlayerById(vote.targetId);
+    const target = await getPlayerById(vote.targetId);
 
     return NextResponse.json({
       hasVoted: true,

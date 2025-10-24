@@ -1,4 +1,4 @@
-import { getDb } from '../db';
+import { getDb } from '../db-unified';
 import { Game, CreateGameInput, GameState } from '@/types/game';
 import { nanoid } from 'nanoid';
 
@@ -18,7 +18,7 @@ export function generateGameCode(): string {
 /**
  * Create a new game
  */
-export function createGame(input: CreateGameInput): Game {
+export async function createGame(input: CreateGameInput): Promise<Game> {
   const db = getDb();
   const id = nanoid();
   const code = generateGameCode();
@@ -29,14 +29,14 @@ export function createGame(input: CreateGameInput): Game {
     VALUES (?, ?, ?, ?, ?, ?)
   `);
 
-  stmt.run(
+  await stmt.bind(
     id,
     code,
     input.theme,
     'waiting',
     now,
     JSON.stringify(input.config)
-  );
+  ).run();
 
   return {
     id,
@@ -53,10 +53,10 @@ export function createGame(input: CreateGameInput): Game {
 /**
  * Get game by ID
  */
-export function getGameById(id: string): Game | null {
+export async function getGameById(id: string): Promise<Game | null> {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM games WHERE id = ?');
-  const row = stmt.get(id) as any;
+  const row = await stmt.bind(id).get() as any;
 
   if (!row) return null;
 
@@ -75,10 +75,10 @@ export function getGameById(id: string): Game | null {
 /**
  * Get game by code
  */
-export function getGameByCode(code: string): Game | null {
+export async function getGameByCode(code: string): Promise<Game | null> {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM games WHERE code = ?');
-  const row = stmt.get(code.toUpperCase()) as any;
+  const row = await stmt.bind(code.toUpperCase()).get() as any;
 
   if (!row) return null;
 
@@ -97,7 +97,7 @@ export function getGameByCode(code: string): Game | null {
 /**
  * Update game state
  */
-export function updateGameState(id: string, state: GameState): void {
+export async function updateGameState(id: string, state: GameState): Promise<void> {
   const db = getDb();
   const now = Date.now();
 
@@ -109,25 +109,25 @@ export function updateGameState(id: string, state: GameState): void {
     WHERE id = ?
   `);
 
-  stmt.run(state, state, now, state, now, id);
+  await stmt.bind(state, state, now, state, now, id).run();
 }
 
 /**
  * Delete a game (and all associated players via CASCADE)
  */
-export function deleteGame(id: string): void {
+export async function deleteGame(id: string): Promise<void> {
   const db = getDb();
   const stmt = db.prepare('DELETE FROM games WHERE id = ?');
-  stmt.run(id);
+  await stmt.bind(id).run();
 }
 
 /**
  * Get all games (for admin/debugging)
  */
-export function getAllGames(): Game[] {
+export async function getAllGames(): Promise<Game[]> {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM games ORDER BY created_at DESC');
-  const rows = stmt.all() as any[];
+  const rows = await stmt.all() as any[];
 
   return rows.map(row => ({
     id: row.id,

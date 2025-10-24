@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createGame } from '@/lib/models/game';
 import { getDistributionForPlayerCount } from '@/lib/roles';
+import { Theme } from '@/types/game';
+
+export const runtime = 'edge';
 
 /**
  * POST /api/games
@@ -8,7 +11,7 @@ import { getDistributionForPlayerCount } from '@/lib/roles';
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as { theme: Theme; playerCount: number };
     const { theme, playerCount } = body;
 
     // Validate input
@@ -36,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create game
-    const game = createGame({
+    const game = await createGame({
       theme,
       config: {
         roleDistribution,

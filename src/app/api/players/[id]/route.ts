@@ -2,18 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPlayerById } from '@/lib/models/player';
 import { getGameById } from '@/lib/models/game';
 
+export const runtime = 'edge';
+
 /**
  * GET /api/players/[id]
  * Get player details including their role and game theme
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
-    const player = getPlayerById(id);
+    const player = await getPlayerById(id);
     if (!player) {
       return NextResponse.json(
         { error: 'Player not found' },
@@ -22,7 +24,7 @@ export async function GET(
     }
 
     // Get game to include theme
-    const game = getGameById(player.gameId);
+    const game = await getGameById(player.gameId);
 
     // Return full player data including role and theme
     // The player ID in the URL acts as authentication

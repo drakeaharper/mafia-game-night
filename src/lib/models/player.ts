@@ -1,4 +1,4 @@
-import { getDb } from '../db';
+import { getDb } from '../db-unified';
 import { Player, CreatePlayerInput } from '@/types/player';
 import { RoleDefinition } from '@/types/role';
 import { nanoid } from 'nanoid';
@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 /**
  * Create a new player
  */
-export function createPlayer(input: CreatePlayerInput): Player {
+export async function createPlayer(input: CreatePlayerInput): Promise<Player> {
   const db = getDb();
   const id = nanoid();
   const now = Date.now();
@@ -16,7 +16,7 @@ export function createPlayer(input: CreatePlayerInput): Player {
     VALUES (?, ?, ?, ?)
   `);
 
-  stmt.run(id, input.gameId, input.name, now);
+  await stmt.bind(id, input.gameId, input.name, now).run();
 
   return {
     id,
@@ -32,10 +32,10 @@ export function createPlayer(input: CreatePlayerInput): Player {
 /**
  * Get player by ID
  */
-export function getPlayerById(id: string): Player | null {
+export async function getPlayerById(id: string): Promise<Player | null> {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM players WHERE id = ?');
-  const row = stmt.get(id) as any;
+  const row = await stmt.bind(id).get() as any;
 
   if (!row) return null;
 
@@ -53,10 +53,10 @@ export function getPlayerById(id: string): Player | null {
 /**
  * Get all players for a game
  */
-export function getPlayersByGameId(gameId: string): Player[] {
+export async function getPlayersByGameId(gameId: string): Promise<Player[]> {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM players WHERE game_id = ? ORDER BY joined_at');
-  const rows = stmt.all(gameId) as any[];
+  const rows = await stmt.bind(gameId).all() as any[];
 
   return rows.map(row => ({
     id: row.id,
@@ -72,59 +72,59 @@ export function getPlayersByGameId(gameId: string): Player[] {
 /**
  * Assign a role to a player
  */
-export function assignRole(playerId: string, role: string, roleData: RoleDefinition): void {
+export async function assignRole(playerId: string, role: string, roleData: RoleDefinition): Promise<void> {
   const db = getDb();
   const stmt = db.prepare(`
     UPDATE players
     SET role = ?, role_data = ?
     WHERE id = ?
   `);
-  stmt.run(role, JSON.stringify(roleData), playerId);
+  await stmt.bind(role, JSON.stringify(roleData), playerId).run();
 }
 
 /**
  * Mark a player as eliminated
  */
-export function eliminatePlayer(playerId: string): void {
+export async function eliminatePlayer(playerId: string): Promise<void> {
   const db = getDb();
   const stmt = db.prepare('UPDATE players SET is_alive = 0 WHERE id = ?');
-  stmt.run(playerId);
+  await stmt.bind(playerId).run();
 }
 
 /**
  * Revive a player (set is_alive back to 1)
  */
-export function revivePlayer(playerId: string): void {
+export async function revivePlayer(playerId: string): Promise<void> {
   const db = getDb();
   const stmt = db.prepare('UPDATE players SET is_alive = 1 WHERE id = ?');
-  stmt.run(playerId);
+  await stmt.bind(playerId).run();
 }
 
 /**
  * Delete a player
  */
-export function deletePlayer(id: string): void {
+export async function deletePlayer(id: string): Promise<void> {
   const db = getDb();
   const stmt = db.prepare('DELETE FROM players WHERE id = ?');
-  stmt.run(id);
+  await stmt.bind(id).run();
 }
 
 /**
  * Check if a player name is already taken in a game
  */
-export function isPlayerNameTaken(gameId: string, name: string): boolean {
+export async function isPlayerNameTaken(gameId: string, name: string): Promise<boolean> {
   const db = getDb();
   const stmt = db.prepare('SELECT COUNT(*) as count FROM players WHERE game_id = ? AND name = ?');
-  const result = stmt.get(gameId, name) as any;
+  const result = await stmt.bind(gameId, name).get() as any;
   return result.count > 0;
 }
 
 /**
  * Get player count for a game
  */
-export function getPlayerCount(gameId: string): number {
+export async function getPlayerCount(gameId: string): Promise<number> {
   const db = getDb();
   const stmt = db.prepare('SELECT COUNT(*) as count FROM players WHERE game_id = ?');
-  const result = stmt.get(gameId) as any;
+  const result = await stmt.bind(gameId).get() as any;
   return result.count;
 }
