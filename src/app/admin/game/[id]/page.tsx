@@ -455,7 +455,7 @@ export default function AdminGamePage() {
               <h2 className="font-bold">Death Message Generator</h2>
               <button
                 onClick={() => {
-                  const message = getRandomDeathMessage();
+                  const message = getRandomDeathMessage(game.theme);
                   setDeathMessage(message);
                   setShowDeathMessage(true);
                 }}
