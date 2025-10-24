@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-export const runtime = 'edge';
 import { useParams } from 'next/navigation';
 import QRCode from 'qrcode';
 

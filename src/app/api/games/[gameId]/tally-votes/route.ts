@@ -3,8 +3,6 @@ import { getGameById } from '@/lib/models/game';
 import { getPlayerById, eliminatePlayer } from '@/lib/models/player';
 import { getPlayersWithMostVotes, getVoteCounts, deleteVotesByGame } from '@/lib/models/vote';
 
-export const runtime = 'edge';
-
 /**
  * POST /api/games/[gameId]/tally-votes
  * Tally votes and eliminate the player with the most votes

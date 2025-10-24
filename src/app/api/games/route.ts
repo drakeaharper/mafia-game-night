@@ -3,8 +3,6 @@ import { createGame } from '@/lib/models/game';
 import { getDistributionForPlayerCount } from '@/lib/roles';
 import { Theme } from '@/types/game';
 
-export const runtime = 'edge';
-
 /**
  * POST /api/games
  * Create a new game

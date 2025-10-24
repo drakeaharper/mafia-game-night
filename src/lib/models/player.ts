@@ -56,7 +56,8 @@ export async function getPlayerById(id: string): Promise<Player | null> {
 export async function getPlayersByGameId(gameId: string): Promise<Player[]> {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM players WHERE game_id = ? ORDER BY joined_at');
-  const rows = await stmt.bind(gameId).all() as any[];
+  const result = await stmt.bind(gameId).all();
+  const rows = result.results as any[];
 
   return rows.map(row => ({
     id: row.id,

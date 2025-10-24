@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-export const runtime = 'edge';
 import { useParams } from 'next/navigation';
 
 interface Player {
@@ -35,6 +33,8 @@ export default function PlayerPage() {
   const [voteTarget, setVoteTarget] = useState('');
   const [currentVote, setCurrentVote] = useState<{ targetId: string; targetName: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showActivePlayers, setShowActivePlayers] = useState(true);
+  const [showEliminatedPlayers, setShowEliminatedPlayers] = useState(true);
 
   const fetchPlayer = async () => {
     try {
@@ -309,23 +309,31 @@ export default function PlayerPage() {
         {/* Active Players List */}
         {alivePlayers.length > 0 && (
           <div className="bg-gray-800 p-4 rounded-lg mb-4">
-            <h2 className="font-bold mb-3">Active Players ({alivePlayers.length})</h2>
-            <ul className="space-y-2">
-              {alivePlayers.map((p) => (
-                <li key={p.id} className="bg-gray-700 p-3 rounded flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {suspiciousPlayers.has(p.id) && <span className="text-yellow-400">⭐</span>}
-                    <span>{p.name}</span>
-                  </div>
-                  <button
-                    onClick={() => toggleSuspicious(p.id)}
-                    className="text-xs bg-gray-600 hover:bg-gray-500 px-3 py-1 rounded transition-colors"
-                  >
-                    {suspiciousPlayers.has(p.id) ? 'Unmark' : 'Mark Suspicious'}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <button
+              onClick={() => setShowActivePlayers(!showActivePlayers)}
+              className="w-full flex items-center justify-between font-bold mb-3 hover:text-gray-300 transition-colors cursor-pointer text-left"
+            >
+              <span>Active Players ({alivePlayers.length})</span>
+              <span className="text-xl">{showActivePlayers ? '▼' : '▶'}</span>
+            </button>
+            {showActivePlayers && (
+              <ul className="space-y-2">
+                {alivePlayers.map((p) => (
+                  <li key={p.id} className="bg-gray-700 p-3 rounded flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {suspiciousPlayers.has(p.id) && <span className="text-yellow-400">⭐</span>}
+                      <span>{p.name}</span>
+                    </div>
+                    <button
+                      onClick={() => toggleSuspicious(p.id)}
+                      className="text-xs bg-gray-600 hover:bg-gray-500 px-3 py-1 rounded transition-colors"
+                    >
+                      {suspiciousPlayers.has(p.id) ? 'Unmark' : 'Mark Suspicious'}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
 
@@ -356,28 +364,36 @@ export default function PlayerPage() {
         {/* Eliminated Players List */}
         {eliminatedPlayers.length > 0 && (
           <div className="bg-gray-800 p-4 rounded-lg">
-            <h2 className="font-bold mb-3">{themeText.eliminated} ({eliminatedPlayers.length})</h2>
-            <ul className="space-y-2">
-              {eliminatedPlayers.map((p) => (
-                <li key={p.id} className="bg-gray-700/50 p-3 rounded opacity-70">
-                  <div className="flex items-center justify-between">
-                    <span className="line-through text-gray-400">{p.name}</span>
-                    {p.roleData && (
-                      <div className="text-right">
-                        <p className="text-sm font-medium">{p.roleData.name}</p>
-                        <p className={`text-xs ${
-                          p.roleData.alignment === 'good' ? 'text-blue-400' :
-                          p.roleData.alignment === 'evil' ? 'text-red-400' :
-                          'text-purple-400'
-                        }`}>
-                          ({p.roleData.alignment})
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <button
+              onClick={() => setShowEliminatedPlayers(!showEliminatedPlayers)}
+              className="w-full flex items-center justify-between font-bold mb-3 hover:text-gray-300 transition-colors cursor-pointer text-left"
+            >
+              <span>{themeText.eliminated} ({eliminatedPlayers.length})</span>
+              <span className="text-xl">{showEliminatedPlayers ? '▼' : '▶'}</span>
+            </button>
+            {showEliminatedPlayers && (
+              <ul className="space-y-2">
+                {eliminatedPlayers.map((p) => (
+                  <li key={p.id} className="bg-gray-700/50 p-3 rounded opacity-70">
+                    <div className="flex items-center justify-between">
+                      <span className="line-through text-gray-400">{p.name}</span>
+                      {p.roleData && (
+                        <div className="text-right">
+                          <p className="text-sm font-medium">{p.roleData.name}</p>
+                          <p className={`text-xs ${
+                            p.roleData.alignment === 'good' ? 'text-blue-400' :
+                            p.roleData.alignment === 'evil' ? 'text-red-400' :
+                            'text-purple-400'
+                          }`}>
+                            ({p.roleData.alignment})
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
 

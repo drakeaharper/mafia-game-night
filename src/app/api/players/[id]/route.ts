@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPlayerById } from '@/lib/models/player';
 import { getGameById } from '@/lib/models/game';
 
-export const runtime = 'edge';
-
 /**
  * GET /api/players/[id]
  * Get player details including their role and game theme

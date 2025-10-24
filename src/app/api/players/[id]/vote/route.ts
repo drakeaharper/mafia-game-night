@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPlayerById } from '@/lib/models/player';
 import { createOrUpdateVote, getVoteByPlayer } from '@/lib/models/vote';
 
-export const runtime = 'edge';
-
 /**
  * POST /api/players/[id]/vote
  * Submit a vote for elimination

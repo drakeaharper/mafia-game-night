@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-
-export const runtime = 'edge';
 import { useParams, useRouter } from 'next/navigation';
 
 export default function JoinGamePage() {

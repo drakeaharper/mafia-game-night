@@ -3,8 +3,6 @@ import { getGameById } from '@/lib/models/game';
 import { getPlayersByGameId } from '@/lib/models/player';
 import { getVotesByGame, getVoteCounts } from '@/lib/models/vote';
 
-export const runtime = 'edge';
-
 /**
  * GET /api/games/by-id/[id]/admin
  * Get game details with full player role data for Game Master

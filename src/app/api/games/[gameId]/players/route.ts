@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGameById } from '@/lib/models/game';
 import { getPlayersByGameId } from '@/lib/models/player';
 
-export const runtime = 'edge';
-
 /**
  * GET /api/games/[gameId]/players
  * Get all players in a game (for player list view)

@@ -80,7 +80,8 @@ export async function getVotesByGame(gameId: string): Promise<Vote[]> {
     WHERE game_id = ?
     ORDER BY created_at DESC
   `);
-  const rows = await stmt.bind(gameId).all() as any[];
+  const result = await stmt.bind(gameId).all();
+  const rows = result.results as any[];
 
   return rows.map(row => ({
     id: row.id,
@@ -120,7 +121,8 @@ export async function getVoteCounts(gameId: string): Promise<Map<string, number>
     WHERE game_id = ?
     GROUP BY target_id
   `);
-  const rows = await stmt.bind(gameId).all() as any[];
+  const result = await stmt.bind(gameId).all();
+  const rows = result.results as any[];
 
   const counts = new Map<string, number>();
   rows.forEach(row => {
