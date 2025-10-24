@@ -11,6 +11,9 @@ interface Game {
   state: string;
   config: {
     playerCount: number;
+    enableVoting?: boolean;
+    roleDistribution?: Record<string, number>;
+    theme?: string;
   };
   players: Array<{
     id: string;

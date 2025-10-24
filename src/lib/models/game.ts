@@ -127,7 +127,7 @@ export async function deleteGame(id: string): Promise<void> {
 export async function getAllGames(): Promise<Game[]> {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM games ORDER BY created_at DESC');
-  const result = await stmt.all();
+  const result: any = await stmt.all();
   const rows = result.results as any[];
 
   return rows.map(row => ({

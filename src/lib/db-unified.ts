@@ -26,7 +26,7 @@ export function getDb(): DbAdapter {
       const db = new Database(dbPath);
 
       // Wrapper to match D1 interface
-      dbInstance = {
+      dbInstance = ({
         prepare(query: string) {
           const stmt = db.prepare(query);
           return {
@@ -80,14 +80,14 @@ export function getDb(): DbAdapter {
             },
           };
         },
-      };
+      } as any);
     } catch (error) {
       console.error('Failed to initialize SQLite database:', error);
       throw new Error('Failed to initialize local SQLite database. Please ensure better-sqlite3 is installed.');
     }
   }
 
-  return dbInstance;
+  return dbInstance!;
 }
 
 /**
