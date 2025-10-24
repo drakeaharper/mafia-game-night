@@ -5,6 +5,7 @@ export interface GameConfig {
   roleDistribution: Record<string, number>;
   playerCount: number;
   theme: Theme;
+  enableVoting?: boolean;
 }
 
 export interface Game {

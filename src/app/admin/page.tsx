@@ -7,6 +7,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [theme, setTheme] = useState('classic');
   const [playerCount, setPlayerCount] = useState(10);
+  const [enableVoting, setEnableVoting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [themes, setThemes] = useState<any[]>([]);
 
@@ -29,7 +30,7 @@ export default function AdminPage() {
       const response = await fetch('/api/games', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ theme, playerCount }),
+        body: JSON.stringify({ theme, playerCount, enableVoting }),
       });
 
       if (response.ok) {
@@ -101,6 +102,24 @@ export default function AdminPage() {
             <p className="text-xs text-gray-400 mt-1">
               Minimum 7 players required
             </p>
+          </div>
+
+          {/* Enable Voting */}
+          <div className="mb-6">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={enableVoting}
+                onChange={(e) => setEnableVoting(e.target.checked)}
+                className="w-5 h-5 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500 focus:ring-2"
+              />
+              <div>
+                <span className="text-sm font-medium">Enable Player Voting</span>
+                <p className="text-xs text-gray-400">
+                  Allow players to vote for elimination during day phases
+                </p>
+              </div>
+            </label>
           </div>
 
           {/* Create Button */}

@@ -1,8 +1,19 @@
 'use client';
 
+import { useState } from 'react';
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+  const [gameCode, setGameCode] = useState('');
+
+  const handleJoinGame = () => {
+    if (gameCode.trim()) {
+      router.push(`/game/${gameCode.toUpperCase()}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-4">
       <div className="max-w-2xl mx-auto text-center">
@@ -30,17 +41,23 @@ export default function Home() {
             <input
               type="text"
               placeholder="Enter game code"
-              className="w-full p-3 bg-gray-700 rounded text-center uppercase tracking-widest"
+              value={gameCode}
+              onChange={(e) => setGameCode(e.target.value)}
+              className="w-full p-3 bg-gray-700 rounded text-center uppercase tracking-widest mb-3"
               maxLength={6}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  const input = e.currentTarget;
-                  if (input.value.trim()) {
-                    window.location.href = `/game/${input.value.toUpperCase()}`;
-                  }
+                  handleJoinGame();
                 }
               }}
             />
+            <button
+              onClick={handleJoinGame}
+              disabled={!gameCode.trim()}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed p-3 rounded font-bold transition-colors"
+            >
+              Join Game
+            </button>
           </div>
         </div>
 

@@ -536,7 +536,7 @@ export default function AdminGamePage() {
         </div>
 
         {/* Voting Section */}
-        {game.state === 'active' && game.votes && (
+        {game.config?.enableVoting && game.state === 'active' && game.votes && (
           <div className="bg-gray-800 p-4 rounded-lg mb-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-bold">

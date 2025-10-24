@@ -10,6 +10,8 @@ interface Player {
   role: any;
   isAlive: boolean;
   theme: string;
+  enableVoting: boolean;
+  roleDistribution: Record<string, number>;
 }
 
 interface PlayerListItem {
@@ -23,6 +25,18 @@ interface PlayerListItem {
   };
 }
 
+interface RoleDefinition {
+  id: string;
+  name: string;
+  alignment: string;
+  description: string;
+  abilities?: Array<{
+    name: string;
+    description: string;
+    phase?: string;
+  }>;
+}
+
 export default function PlayerPage() {
   const params = useParams();
   const playerId = params.id as string;
@@ -33,8 +47,10 @@ export default function PlayerPage() {
   const [voteTarget, setVoteTarget] = useState('');
   const [currentVote, setCurrentVote] = useState<{ targetId: string; targetName: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showActivePlayers, setShowActivePlayers] = useState(true);
-  const [showEliminatedPlayers, setShowEliminatedPlayers] = useState(true);
+  const [showActivePlayers, setShowActivePlayers] = useState(false);
+  const [showEliminatedPlayers, setShowEliminatedPlayers] = useState(false);
+  const [showRoleKey, setShowRoleKey] = useState(false);
+  const [allRoles, setAllRoles] = useState<RoleDefinition[]>([]);
 
   const fetchPlayer = async () => {
     try {
@@ -84,6 +100,18 @@ export default function PlayerPage() {
     }
   };
 
+  const fetchAllRoles = async (theme: string) => {
+    try {
+      const response = await fetch(`/api/themes/${theme}/roles`);
+      if (response.ok) {
+        const data = await response.json() as { roles: RoleDefinition[] };
+        setAllRoles(data.roles);
+      }
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
   useEffect(() => {
     fetchPlayer();
 
@@ -99,6 +127,7 @@ export default function PlayerPage() {
     if (player?.gameId && player?.role) {
       fetchPlayerList();
       fetchCurrentVote();
+      fetchAllRoles(player.theme);
 
       // Poll for player list and vote updates
       const interval = setInterval(() => {
@@ -108,7 +137,7 @@ export default function PlayerPage() {
 
       return () => clearInterval(interval);
     }
-  }, [player?.gameId, player?.role]);
+  }, [player?.gameId, player?.role, player?.theme]);
 
   const toggleSuspicious = (targetId: string) => {
     setSuspiciousPlayers(prev => {
@@ -220,6 +249,11 @@ export default function PlayerPage() {
 
   const alivePlayers = playerList.filter(p => p.isAlive && p.id !== playerId);
   const eliminatedPlayers = playerList.filter(p => !p.isAlive);
+
+  // Filter roles to only show those in the game's distribution
+  const rolesInGame = allRoles.filter(role =>
+    player?.roleDistribution && role.id in player.roleDistribution
+  );
 
   // Apply Harry Potter font if theme is harry-potter
   const isHarryPotter = player.theme === 'harry-potter';
@@ -338,7 +372,7 @@ export default function PlayerPage() {
         )}
 
         {/* Vote Button */}
-        {player.isAlive && alivePlayers.length > 0 && (
+        {player.enableVoting && player.isAlive && alivePlayers.length > 0 && (
           <div className="mb-4">
             {currentVote ? (
               <div className="bg-green-900 border-2 border-green-600 p-4 rounded text-center">
@@ -363,7 +397,7 @@ export default function PlayerPage() {
 
         {/* Eliminated Players List */}
         {eliminatedPlayers.length > 0 && (
-          <div className="bg-gray-800 p-4 rounded-lg">
+          <div className="bg-gray-800 p-4 rounded-lg mb-4">
             <button
               onClick={() => setShowEliminatedPlayers(!showEliminatedPlayers)}
               className="w-full flex items-center justify-between font-bold mb-3 hover:text-gray-300 transition-colors cursor-pointer text-left"
@@ -393,6 +427,52 @@ export default function PlayerPage() {
                   </li>
                 ))}
               </ul>
+            )}
+          </div>
+        )}
+
+        {/* Role Key */}
+        {rolesInGame.length > 0 && (
+          <div className="bg-gray-800 p-4 rounded-lg">
+            <button
+              onClick={() => setShowRoleKey(!showRoleKey)}
+              className="w-full flex items-center justify-between font-bold mb-3 hover:text-gray-300 transition-colors cursor-pointer text-left"
+            >
+              <span>Role Key ({rolesInGame.length})</span>
+              <span className="text-xl">{showRoleKey ? '▼' : '▶'}</span>
+            </button>
+            {showRoleKey && (
+              <div className="space-y-3">
+                {rolesInGame.map((role) => (
+                  <div key={role.id} className="bg-gray-700 p-3 rounded">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-lg">{role.name}</h3>
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        role.alignment === 'good' ? 'bg-blue-900 text-blue-300' :
+                        role.alignment === 'evil' ? 'bg-red-900 text-red-300' :
+                        'bg-purple-900 text-purple-300'
+                      }`}>
+                        {role.alignment}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-300 mb-2">{role.description}</p>
+                    {role.abilities && role.abilities.length > 0 && (
+                      <div className="mt-2 pt-2 border-t border-gray-600">
+                        <p className="text-xs font-semibold text-gray-400 mb-1">Abilities:</p>
+                        <ul className="space-y-1">
+                          {role.abilities.map((ability, idx) => (
+                            <li key={idx} className="text-xs text-gray-400">
+                              <span className="font-medium text-gray-300">{ability.name}</span>
+                              {ability.phase && <span className="text-gray-500"> ({ability.phase})</span>}
+                              : {ability.description}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}

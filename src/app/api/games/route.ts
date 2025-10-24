@@ -9,8 +9,8 @@ import { Theme } from '@/types/game';
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as { theme: Theme; playerCount: number };
-    const { theme, playerCount } = body;
+    const body = await request.json() as { theme: Theme; playerCount: number; enableVoting?: boolean };
+    const { theme, playerCount, enableVoting = false } = body;
 
     // Validate input
     if (!theme || !playerCount) {
@@ -43,6 +43,7 @@ export async function POST(request: NextRequest) {
         roleDistribution,
         playerCount,
         theme,
+        enableVoting,
       },
     });
 

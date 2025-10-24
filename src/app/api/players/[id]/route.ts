@@ -34,6 +34,8 @@ export async function GET(
       isAlive: player.isAlive,
       joinedAt: player.joinedAt,
       theme: game?.theme || 'classic',
+      enableVoting: game?.config?.enableVoting || false,
+      roleDistribution: game?.config?.roleDistribution || {},
     });
   } catch (error) {
     console.error('Error getting player:', error);
