@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import QRCode from 'qrcode';
+import { getRandomDeathMessage } from '@/data/death-messages';
 
 interface Game {
   id: string;
@@ -58,6 +59,8 @@ export default function AdminGamePage() {
   const [urlInput, setUrlInput] = useState('');
   const [codeCopied, setCodeCopied] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
+  const [deathMessage, setDeathMessage] = useState('');
+  const [showDeathMessage, setShowDeathMessage] = useState(false);
   const [showTallyConfirm, setShowTallyConfirm] = useState(false);
   const [showTieModal, setShowTieModal] = useState(false);
   const [tiedPlayers, setTiedPlayers] = useState<Array<{id: string; name: string; voteCount: number}>>([]);
@@ -442,6 +445,39 @@ export default function AdminGamePage() {
           <div className="bg-white p-4 rounded-lg mb-4 text-center">
             <img src={qrCodeUrl} alt="QR Code" className="mx-auto" />
             <p className="text-gray-600 text-sm mt-2">Scan to join game</p>
+          </div>
+        )}
+
+        {/* Death Message Generator */}
+        {game.state === 'active' && (
+          <div className="bg-gray-800 p-4 rounded-lg mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-bold">Death Message Generator</h2>
+              <button
+                onClick={() => {
+                  const message = getRandomDeathMessage();
+                  setDeathMessage(message);
+                  setShowDeathMessage(true);
+                }}
+                className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded font-medium transition-colors text-sm"
+              >
+                🎲 Generate
+              </button>
+            </div>
+            {showDeathMessage && deathMessage && (
+              <div className="bg-gray-700 p-4 rounded border-2 border-purple-500 animate-pulse">
+                <p className="text-center italic text-lg">
+                  <span className="text-purple-300">&quot;</span>
+                  {deathMessage}
+                  <span className="text-purple-300">&quot;</span>
+                </p>
+              </div>
+            )}
+            {!showDeathMessage && (
+              <p className="text-gray-400 text-sm text-center">
+                Click Generate for a whimsical death message
+              </p>
+            )}
           </div>
         )}
 
