@@ -106,5 +106,20 @@ export function getRoleDistribution(
     }
   }
 
-  return bestMatch ? presets[bestMatch] : null;
+  if (!bestMatch) {
+    return null;
+  }
+
+  const distribution = { ...presets[bestMatch] };
+
+  // Calculate total roles in the preset
+  const totalRoles = Object.values(distribution).reduce((sum, count) => sum + count, 0);
+
+  // If the player count is higher than the preset, add extra townspeople
+  if (totalRoles < playerCount) {
+    const extraNeeded = playerCount - totalRoles;
+    distribution.townsperson = (distribution.townsperson || 0) + extraNeeded;
+  }
+
+  return distribution;
 }
