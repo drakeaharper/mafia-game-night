@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Mafia Game Night",
+  title: "Death Eaters Among Us",
   description: "Digital companion for in-person Mafia/Werewolf games",
 };
 

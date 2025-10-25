@@ -41,7 +41,7 @@ export default function JoinGamePage() {
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Mafia Game Night</h1>
+          <h1 className="text-3xl font-bold mb-2">Death Eaters Among Us</h1>
           <p className="text-gray-400">Join Game</p>
         </div>
 

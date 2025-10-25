@@ -51,7 +51,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
       <div className="max-w-md mx-auto mt-12">
-        <h1 className="text-3xl font-bold mb-2">Mafia Game Night</h1>
+        <h1 className="text-3xl font-bold mb-2">Death Eaters Among Us</h1>
         <p className="text-gray-400 mb-8">Game Master Console</p>
 
         <div className="bg-gray-800 p-6 rounded-lg">
