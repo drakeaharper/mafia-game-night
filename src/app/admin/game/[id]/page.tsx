@@ -1,5 +1,7 @@
 'use client';
 
+export const runtime = 'edge';
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import QRCode from 'qrcode';
@@ -68,6 +70,7 @@ export default function AdminGamePage() {
   const [tallying, setTallying] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [showVoteDetails, setShowVoteDetails] = useState(false);
+  const [rerolling, setRerolling] = useState(false);
 
   // Initialize base URL on mount
   useEffect(() => {
@@ -132,6 +135,35 @@ export default function AdminGamePage() {
       alert('Error issuing cards');
     } finally {
       setIssuing(false);
+    }
+  };
+
+  // Reroll roles
+  const handleRerollRoles = async () => {
+    if (!game) return;
+
+    if (!confirm('Reroll all roles? This will:\n• Assign new random roles to all players\n• Reset all players to alive status\n• Clear all votes\n\nThis cannot be undone.')) {
+      return;
+    }
+
+    setRerolling(true);
+    try {
+      const response = await fetch(`/api/games/by-id/${gameId}/reroll-roles`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        fetchGame(); // Refresh game state
+        alert('Roles rerolled! All players have new roles and have been reset to alive status. All votes cleared.');
+      } else {
+        const error = await response.json() as { error?: string };
+        alert(error.error || 'Failed to reroll roles');
+      }
+    } catch (error) {
+      console.error('Error rerolling roles:', error);
+      alert('Error rerolling roles');
+    } finally {
+      setRerolling(false);
     }
   };
 
@@ -796,11 +828,20 @@ export default function AdminGamePage() {
         )}
 
         {game.state === 'active' && (
-          <div className="bg-green-900 border-2 border-green-600 p-4 rounded text-center">
-            <p className="font-bold text-lg">Game Active!</p>
-            <p className="text-sm text-green-300 mt-1">
-              All players have received their roles.
-            </p>
+          <div className="space-y-4">
+            <div className="bg-green-900 border-2 border-green-600 p-4 rounded text-center">
+              <p className="font-bold text-lg">Game Active!</p>
+              <p className="text-sm text-green-300 mt-1">
+                All players have received their roles.
+              </p>
+            </div>
+            <button
+              onClick={handleRerollRoles}
+              disabled={rerolling}
+              className="w-full bg-purple-600 hover:bg-purple-700 p-4 rounded font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {rerolling ? 'Rerolling Roles...' : '🎲 Reroll Roles'}
+            </button>
           </div>
         )}
       </div>

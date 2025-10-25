@@ -56,8 +56,7 @@ export async function getPlayerById(id: string): Promise<Player | null> {
 export async function getPlayersByGameId(gameId: string): Promise<Player[]> {
   const db = getDb();
   const stmt = db.prepare('SELECT * FROM players WHERE game_id = ? ORDER BY joined_at');
-  const result: any = await stmt.bind(gameId).all();
-  const rows = result.results as any[];
+  const rows = await stmt.bind(gameId).all() as any[];
 
   return rows.map(row => ({
     id: row.id,
@@ -128,4 +127,13 @@ export async function getPlayerCount(gameId: string): Promise<number> {
   const stmt = db.prepare('SELECT COUNT(*) as count FROM players WHERE game_id = ?');
   const result = await stmt.bind(gameId).get() as any;
   return result.count;
+}
+
+/**
+ * Reset all players in a game to alive status
+ */
+export async function resetPlayersToAlive(gameId: string): Promise<void> {
+  const db = getDb();
+  const stmt = db.prepare('UPDATE players SET is_alive = 1 WHERE game_id = ?');
+  await stmt.bind(gameId).run();
 }
