@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGameByCode } from '@/lib/models/game';
 import { createPlayer, isPlayerNameTaken } from '@/lib/models/player';
+export const runtime = 'edge';
+
 
 /**
  * POST /api/games/by-code/[code]/join

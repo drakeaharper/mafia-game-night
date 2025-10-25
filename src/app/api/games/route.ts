@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createGame } from '@/lib/models/game';
 import { getDistributionForPlayerCount } from '@/lib/roles';
 import { Theme } from '@/types/game';
+export const runtime = 'edge';
+
 
 /**
  * POST /api/games

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGameById, updateGameState } from '@/lib/models/game';
 import { getPlayersByGameId, assignRole } from '@/lib/models/player';
 import { generateRolePool } from '@/lib/roles';
+export const runtime = 'edge';
+
 
 /**
  * POST /api/games/by-id/[id]/issue-cards

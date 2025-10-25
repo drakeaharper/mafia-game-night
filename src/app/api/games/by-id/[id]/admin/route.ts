@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGameById } from '@/lib/models/game';
 import { getPlayersByGameId } from '@/lib/models/player';
 import { getVotesByGame, getVoteCounts } from '@/lib/models/vote';
+export const runtime = 'edge';
+
 
 /**
  * GET /api/games/by-id/[id]/admin

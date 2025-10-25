@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPlayerById, eliminatePlayer, revivePlayer } from '@/lib/models/player';
+export const runtime = 'edge';
+
 
 /**
  * PATCH /api/players/[id]/status

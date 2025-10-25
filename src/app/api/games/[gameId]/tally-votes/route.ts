@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getGameById } from '@/lib/models/game';
 import { getPlayerById, eliminatePlayer } from '@/lib/models/player';
 import { getPlayersWithMostVotes, getVoteCounts, deleteVotesByGame } from '@/lib/models/vote';
+export const runtime = 'edge';
+
 
 /**
  * POST /api/games/[gameId]/tally-votes

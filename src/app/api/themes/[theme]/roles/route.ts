@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRolesForTheme } from '@/lib/roles';
+export const runtime = 'edge';
+
 
 /**
  * GET /api/themes/[theme]/roles

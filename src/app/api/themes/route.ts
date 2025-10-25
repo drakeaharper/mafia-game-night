@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAvailableThemes, getThemeMetadata } from '@/lib/roles';
+export const runtime = 'edge';
+
 
 /**
  * GET /api/themes
