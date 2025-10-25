@@ -71,6 +71,7 @@ export default function AdminGamePage() {
   const [clearing, setClearing] = useState(false);
   const [showVoteDetails, setShowVoteDetails] = useState(false);
   const [rerolling, setRerolling] = useState(false);
+  const [kickingPlayerId, setKickingPlayerId] = useState<string | null>(null);
 
   // Initialize base URL on mount
   useEffect(() => {
@@ -243,6 +244,33 @@ export default function AdminGamePage() {
     }
   };
 
+  // Kick player from game
+  const handleKickPlayer = async (playerId: string, playerName: string) => {
+    if (!confirm(`Kick ${playerName} from the game? This cannot be undone.`)) {
+      return;
+    }
+
+    setKickingPlayerId(playerId);
+    try {
+      const response = await fetch(`/api/players/${playerId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        fetchGame(); // Refresh game data
+        alert(`${playerName} has been kicked from the game.`);
+      } else {
+        const error = await response.json() as { error?: string };
+        alert(error.error || 'Failed to kick player');
+      }
+    } catch (error) {
+      console.error('Error kicking player:', error);
+      alert('Error kicking player');
+    } finally {
+      setKickingPlayerId(null);
+    }
+  };
+
   // Update base URL
   const handleUpdateUrl = () => {
     setBaseUrl(urlInput);
@@ -361,8 +389,12 @@ export default function AdminGamePage() {
     );
   }
 
-  const canIssueCards = game.players.length >= game.config.playerCount && game.state === 'waiting';
+  const canIssueCards = game.players.length > 0 && game.state === 'waiting';
   const playersNeeded = Math.max(0, game.config.playerCount - game.players.length);
+
+  // Separate active players (with roles) from waiting room (no roles)
+  const activePlayers = game.players.filter(p => p.hasRole);
+  const waitingRoomPlayers = game.players.filter(p => !p.hasRole);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
@@ -513,10 +545,10 @@ export default function AdminGamePage() {
           </div>
         )}
 
-        {/* Players List */}
+        {/* Active Players List */}
         <div className="bg-gray-800 p-4 rounded-lg mb-4">
           <h2 className="font-bold mb-3">
-            Players ({game.players.length})
+            {game.state === 'active' ? 'Active Players' : 'Players'} ({activePlayers.length})
             {game.state === 'waiting' && (
               <span className="ml-2 text-sm text-green-500 animate-pulse">● Waiting</span>
             )}
@@ -525,13 +557,17 @@ export default function AdminGamePage() {
             )}
           </h2>
 
-          {game.players.length === 0 ? (
+          {activePlayers.length === 0 && game.state === 'waiting' ? (
             <p className="text-gray-400 text-center py-8">
-              Waiting for players to join...
+              No players yet. Issue cards to start the game.
+            </p>
+          ) : activePlayers.length === 0 ? (
+            <p className="text-gray-400 text-center py-8">
+              All players are in the waiting room.
             </p>
           ) : (
             <ul className="space-y-2">
-              {game.players.map((player) => {
+              {activePlayers.map((player) => {
                 const alignmentColors = {
                   good: 'bg-blue-900 text-blue-300 border-blue-600',
                   evil: 'bg-red-900 text-red-300 border-red-600',
@@ -585,18 +621,27 @@ export default function AdminGamePage() {
                         <p className="text-xs text-gray-400 mb-2">
                           {player.roleData.description}
                         </p>
-                        {game.state === 'active' && (
+                        <div className="flex gap-2">
+                          {game.state === 'active' && (
+                            <button
+                              onClick={() => togglePlayerStatus(player.id, player.isAlive)}
+                              className={`flex-1 text-xs px-3 py-2 rounded font-medium transition-colors ${
+                                player.isAlive
+                                  ? 'bg-red-900 hover:bg-red-800 text-red-200'
+                                  : 'bg-green-900 hover:bg-green-800 text-green-200'
+                              }`}
+                            >
+                              {player.isAlive ? '☠ Eliminate' : '❤️ Revive'}
+                            </button>
+                          )}
                           <button
-                            onClick={() => togglePlayerStatus(player.id, player.isAlive)}
-                            className={`w-full text-xs px-3 py-2 rounded font-medium transition-colors ${
-                              player.isAlive
-                                ? 'bg-red-900 hover:bg-red-800 text-red-200'
-                                : 'bg-green-900 hover:bg-green-800 text-green-200'
-                            }`}
+                            onClick={() => handleKickPlayer(player.id, player.name)}
+                            disabled={kickingPlayerId === player.id}
+                            className="flex-1 text-xs px-3 py-2 rounded font-medium transition-colors bg-gray-700 hover:bg-gray-600 text-gray-200 disabled:opacity-50"
                           >
-                            {player.isAlive ? '☠ Eliminate Player' : '❤️ Revive Player'}
+                            {kickingPlayerId === player.id ? 'Kicking...' : '🚫 Kick'}
                           </button>
-                        )}
+                        </div>
                       </div>
                     )}
                   </li>
@@ -605,6 +650,43 @@ export default function AdminGamePage() {
             </ul>
           )}
         </div>
+
+        {/* Waiting Room */}
+        {waitingRoomPlayers.length > 0 && (
+          <div className="bg-gray-800 p-4 rounded-lg mb-4 border-2 border-yellow-600">
+            <h2 className="font-bold mb-3 flex items-center">
+              <span>Waiting Room ({waitingRoomPlayers.length})</span>
+              <span className="ml-2 text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded">
+                No roles yet
+              </span>
+            </h2>
+            <p className="text-sm text-gray-400 mb-3">
+              These players will be added to the game when you reroll roles.
+            </p>
+            <ul className="space-y-2">
+              {waitingRoomPlayers.map((player) => (
+                <li
+                  key={player.id}
+                  className="p-3 rounded bg-gray-700 border-2 border-yellow-700"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium">{player.name}</span>
+                    <span className="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded">
+                      Waiting
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => handleKickPlayer(player.id, player.name)}
+                    disabled={kickingPlayerId === player.id}
+                    className="w-full text-xs px-3 py-2 rounded font-medium transition-colors bg-gray-600 hover:bg-gray-500 text-gray-200 disabled:opacity-50"
+                  >
+                    {kickingPlayerId === player.id ? 'Kicking...' : '🚫 Kick from Waiting Room'}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Voting Section */}
         {game.config?.enableVoting && game.state === 'active' && game.votes && (

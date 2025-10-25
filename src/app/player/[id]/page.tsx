@@ -53,6 +53,7 @@ export default function PlayerPage() {
   const [showEliminatedPlayers, setShowEliminatedPlayers] = useState(false);
   const [showRoleKey, setShowRoleKey] = useState(false);
   const [allRoles, setAllRoles] = useState<RoleDefinition[]>([]);
+  const [leaving, setLeaving] = useState(false);
 
   const fetchPlayer = async () => {
     try {
@@ -65,6 +66,33 @@ export default function PlayerPage() {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Leave game
+  const handleLeaveGame = async () => {
+    if (!confirm('Leave this game? You will be removed from the game.')) {
+      return;
+    }
+
+    setLeaving(true);
+    try {
+      const response = await fetch(`/api/players/${playerId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert('You have left the game.');
+        window.location.href = '/';
+      } else {
+        const error = await response.json() as { error?: string };
+        alert(error.error || 'Failed to leave game');
+        setLeaving(false);
+      }
+    } catch (error) {
+      console.error('Error leaving game:', error);
+      alert('Error leaving game');
+      setLeaving(false);
     }
   };
 
@@ -222,9 +250,16 @@ export default function PlayerPage() {
             <div className="w-16 h-16 bg-red-600 rounded-full mx-auto mb-4"></div>
             <p className="text-gray-400">Waiting for Game Master to issue cards...</p>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mb-6">
             Keep this page open. Your role will appear automatically.
           </p>
+          <button
+            onClick={handleLeaveGame}
+            disabled={leaving}
+            className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded text-sm transition-colors disabled:opacity-50"
+          >
+            {leaving ? 'Leaving...' : 'Leave Game'}
+          </button>
         </div>
       </div>
     );
@@ -478,6 +513,17 @@ export default function PlayerPage() {
             )}
           </div>
         )}
+
+        {/* Leave Game Button */}
+        <div className="mt-6 pt-6 border-t border-gray-700">
+          <button
+            onClick={handleLeaveGame}
+            disabled={leaving}
+            className="w-full px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded font-medium transition-colors disabled:opacity-50"
+          >
+            {leaving ? 'Leaving...' : 'Leave Game'}
+          </button>
+        </div>
 
         {/* Vote Modal */}
         {showVoteModal && (

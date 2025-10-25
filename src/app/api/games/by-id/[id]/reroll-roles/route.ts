@@ -40,7 +40,7 @@ export async function POST(
       );
     }
 
-    // Get players
+    // Get all players (including those in waiting room)
     const players = await getPlayersByGameId(id);
 
     // Verify we have players
@@ -54,13 +54,8 @@ export async function POST(
     // Generate new role pool (shuffled)
     const rolePool = generateRolePool(game.config.roleDistribution, game.theme);
 
-    // Verify we have the right number of roles
-    if (rolePool.length !== players.length) {
-      return NextResponse.json(
-        { error: 'Role distribution mismatch' },
-        { status: 500 }
-      );
-    }
+    // Assign roles to as many players as we have roles for
+    const playersToAssign = Math.min(players.length, rolePool.length);
 
     // Reset all players to alive
     await resetPlayersToAlive(id);
@@ -68,8 +63,8 @@ export async function POST(
     // Clear all votes
     await deleteVotesByGame(id);
 
-    // Reassign roles to players
-    for (let index = 0; index < players.length; index++) {
+    // Reassign roles to players (up to available role count)
+    for (let index = 0; index < playersToAssign; index++) {
       const player = players[index];
       const role = rolePool[index];
       await assignRole(player.id, role.id, role);
@@ -78,6 +73,8 @@ export async function POST(
     return NextResponse.json({
       success: true,
       playerCount: players.length,
+      rolesAssigned: playersToAssign,
+      waitingRoom: players.length - playersToAssign,
       rolesRerolled: true,
     });
   } catch (error) {

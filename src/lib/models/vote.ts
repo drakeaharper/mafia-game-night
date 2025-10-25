@@ -110,6 +110,15 @@ export async function deleteVotesByGame(gameId: string): Promise<void> {
 }
 
 /**
+ * Delete all votes by or for a specific player
+ */
+export async function deleteVotesByPlayer(playerId: string): Promise<void> {
+  const db = getDb();
+  const stmt = db.prepare('DELETE FROM votes WHERE player_id = ? OR target_id = ?');
+  await stmt.bind(playerId, playerId).run();
+}
+
+/**
  * Get vote count for each target in a game
  */
 export async function getVoteCounts(gameId: string): Promise<Map<string, number>> {

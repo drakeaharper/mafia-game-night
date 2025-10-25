@@ -36,29 +36,22 @@ export async function POST(
     // Get players
     const players = await getPlayersByGameId(id);
 
-    // Check if we have enough players
-    if (players.length < game.config.playerCount) {
+    // Check if we have at least one player
+    if (players.length === 0) {
       return NextResponse.json(
-        {
-          error: `Not enough players. Need ${game.config.playerCount}, have ${players.length}`,
-        },
+        { error: 'No players in game' },
         { status: 400 }
       );
     }
 
-    // Generate role pool (shuffled)
+    // Generate role pool (shuffled) based on actual player count
     const rolePool = generateRolePool(game.config.roleDistribution, game.theme);
 
-    // Verify we have the right number of roles
-    if (rolePool.length !== players.length) {
-      return NextResponse.json(
-        { error: 'Role distribution mismatch' },
-        { status: 500 }
-      );
-    }
+    // Only assign roles to the number of players we have (limited by role pool size)
+    const playersToAssign = Math.min(players.length, rolePool.length);
 
-    // Assign roles to players
-    for (let index = 0; index < players.length; index++) {
+    // Assign roles to players (up to the number of available roles)
+    for (let index = 0; index < playersToAssign; index++) {
       const player = players[index];
       const role = rolePool[index];
       await assignRole(player.id, role.id, role);
@@ -70,6 +63,8 @@ export async function POST(
     return NextResponse.json({
       success: true,
       playerCount: players.length,
+      rolesAssigned: playersToAssign,
+      waitingRoom: players.length - playersToAssign,
       rolesIssued: true,
     });
   } catch (error) {

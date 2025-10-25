@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPlayerById } from '@/lib/models/player';
+import { getPlayerById, deletePlayer } from '@/lib/models/player';
 import { getGameById } from '@/lib/models/game';
+import { deleteVotesByPlayer } from '@/lib/models/vote';
 export const runtime = 'edge';
 
 
@@ -41,6 +42,44 @@ export async function GET(
     });
   } catch (error) {
     console.error('Error getting player:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/players/[id]
+ * Remove a player from the game (for kick/leave functionality)
+ */
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    const player = await getPlayerById(id);
+    if (!player) {
+      return NextResponse.json(
+        { error: 'Player not found' },
+        { status: 404 }
+      );
+    }
+
+    // Delete any votes by or for this player
+    await deleteVotesByPlayer(id);
+
+    // Delete the player
+    await deletePlayer(id);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Player removed from game',
+    });
+  } catch (error) {
+    console.error('Error deleting player:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
