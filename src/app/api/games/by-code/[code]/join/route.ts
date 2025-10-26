@@ -41,14 +41,7 @@ export async function POST(
       );
     }
 
-    // Check if game already started
-    if (game.state !== 'waiting') {
-      return NextResponse.json(
-        { error: 'Game has already started' },
-        { status: 400 }
-      );
-    }
-
+    // Allow joining at any time - players go to waiting room if game is active
     // Check if name is already taken
     if (await isPlayerNameTaken(game.id, name.trim())) {
       return NextResponse.json(
