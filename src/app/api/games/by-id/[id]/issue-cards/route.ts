@@ -36,14 +36,6 @@ export async function POST(
     // Get players
     const players = await getPlayersByGameId(id);
 
-    // Check if we have at least one player
-    if (players.length === 0) {
-      return NextResponse.json(
-        { error: 'No players in game' },
-        { status: 400 }
-      );
-    }
-
     // Generate role pool (shuffled) based on actual player count
     const rolePool = generateRolePool(game.config.roleDistribution, game.theme);
 

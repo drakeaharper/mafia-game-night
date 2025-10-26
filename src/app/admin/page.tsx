@@ -6,10 +6,12 @@ import { useRouter } from 'next/navigation';
 export default function AdminPage() {
   const router = useRouter();
   const [theme, setTheme] = useState('classic');
-  const [playerCount, setPlayerCount] = useState(10);
   const [enableVoting, setEnableVoting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [themes, setThemes] = useState<any[]>([]);
+
+  // Use a default player count of 12 for role distribution
+  const playerCount = 12;
 
   // Fetch available themes
   useEffect(() => {
@@ -83,25 +85,6 @@ export default function AdminPage() {
                 Recommended: {themes.find(t => t.id === theme)?.recommendedPlayers} players
               </p>
             )}
-          </div>
-
-          {/* Player Count */}
-          <div className="mb-6">
-            <label className="block mb-2 text-sm font-medium">Player Count</label>
-            <div className="flex items-center gap-4">
-              <input
-                type="range"
-                min="7"
-                max="20"
-                value={playerCount}
-                onChange={(e) => setPlayerCount(parseInt(e.target.value))}
-                className="flex-1"
-              />
-              <span className="text-2xl font-bold w-12 text-center">{playerCount}</span>
-            </div>
-            <p className="text-xs text-gray-400 mt-1">
-              Minimum 7 players required
-            </p>
           </div>
 
           {/* Enable Voting */}

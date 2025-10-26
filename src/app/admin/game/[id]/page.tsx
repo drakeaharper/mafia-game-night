@@ -389,8 +389,7 @@ export default function AdminGamePage() {
     );
   }
 
-  const canIssueCards = game.players.length > 0 && game.state === 'waiting';
-  const playersNeeded = Math.max(0, game.config.playerCount - game.players.length);
+  const canIssueCards = game.state === 'waiting';
 
   // Separate active players (with roles) from waiting room (no roles)
   const activePlayers = game.players.filter(p => p.hasRole);
@@ -428,15 +427,9 @@ export default function AdminGamePage() {
           </button>
 
           <div className="mt-4 pt-4 border-t border-gray-700">
-            <p className="text-sm text-gray-400 mb-1">
-              Players: {game.players.length} / {game.config.playerCount}
+            <p className="text-sm text-gray-400 text-center">
+              {game.players.length} {game.players.length === 1 ? 'player' : 'players'} joined
             </p>
-            <div className="w-full bg-gray-700 rounded-full h-2">
-              <div
-                className="bg-red-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(game.players.length / game.config.playerCount) * 100}%` }}
-              />
-            </div>
           </div>
         </div>
 
@@ -896,16 +889,10 @@ export default function AdminGamePage() {
         {game.state === 'waiting' && (
           <button
             onClick={handleIssueCards}
-            disabled={!canIssueCards || issuing}
+            disabled={issuing}
             className="w-full bg-red-600 hover:bg-red-700 p-4 rounded font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {issuing ? (
-              'Issuing Cards...'
-            ) : canIssueCards ? (
-              'Issue Role Cards'
-            ) : (
-              `Need ${playersNeeded} More Player${playersNeeded !== 1 ? 's' : ''}`
-            )}
+            {issuing ? 'Issuing Cards...' : 'Issue Role Cards & Start Game'}
           </button>
         )}
 
